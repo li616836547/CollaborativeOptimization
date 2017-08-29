@@ -67,21 +67,24 @@
 .task-list-content {
 	position: relative;
 	width: 100%;
-	height: auto;
+	height: 100%;
 	margin-top: 20px;
 }
 
 .tab-content1,
 .tab-content2,
-.tab-content3 {
+.tab-content3,
+.tab-content4,
+.tab-content5{
 	position: absolute;
 	right: 10%;
 	top: 0;
 	border: 1px solid #ccc;
 	width: 60%;
-	height: 150%;
+	height: 100%;
 	background: #6cf;
 }
+
 .task-config {
 	padding: 20px;
 }

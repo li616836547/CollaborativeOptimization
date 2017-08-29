@@ -10,6 +10,8 @@ import pytz
 # import numpy
 import math
 import collections
+import logging
+import logging.config
 from django.db.models import Max
 # from sklearn.svm import SVC
 # from sklearn.neighbors import KNeighborsClassifier
@@ -28,6 +30,12 @@ from influxdb import InfluxDBClient
 # 每个视图总是以httprequest对象作为它的第一个参数
 # 捕获值永远都是字符串（string）类型，而不会是整数（integer）类型
 # 捕获值总是Unicode objects
+
+# ###############################2017-8-29 引入logging.conf############################
+# logging.config.fileConfig('logging.conf')
+# logger = logging.getLogger('log01')
+
+
 # #####################################禹峰8.2#################################################
 def compare_report_frame(req):
     return render(req, 'cosite/compare_vBRAS_frame.html')
@@ -546,6 +554,7 @@ def api4_stop_task(req):
         stop_flag = d.get('stop')
 
         if stop_flag == 1:
+            # logging.INFO('停止测试！')
             current_task = TestCaseState.objects.get(current_state=True)
             current_task.current_state = False
             current_task.save()
@@ -568,12 +577,6 @@ def api4_if_exist_current_task(req):
             data = {'taskid': str(obj.task_id), 'tasktype': obj.type_name}
         else:
             data = {'taskid': 0}
-
-        # data = {'taskid': '0e4bd490-4676-11e7-af39-ac728980a78b', 'tasktype': 'VNF_1_Concurrent_Session_Capacity'}
-        # data = {'taskid': '0e4bd490-4676-11e7-af39-ac728980a78b',
-        #           'tasktype': 'VNF_2_VBRAS_Client_Forwarding_Performance'}
-        # data = {'taskid': '0e4bd490-4676-11e7-af39-ac728980a78b', 'tasktype': 'VNF_3_PPPoE_IPTV_IPoE_VoIP'}
-
         return HttpResponse(json.dumps(data), content_type='application/json')
         # return HttpResponse(json.dumps(data), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
@@ -1215,6 +1218,7 @@ def local_to_utc(local_ts, utc_format='%Y-%m-%dT%H:%MZ'):
 #                   综合上网需要的最大内存], 厂商二/版本二: [2, 3, 4, 7, 8, 9, 1, 2, 3, 10, 14, 12, 13, 1]}
 def api4_contrast_report(req):
     if req.method =='POST':
+        # logging.INFO('生成对比报告')
         d = json.loads(req.body.decode('utf-8'))
         venders = d.get('venders')
         vnf_type = d.get('vnf_type')
@@ -1320,12 +1324,12 @@ def vnf2_find_test_result(uuid):
 
 def vnf3_find_test_result(uuid):
     dict_result = collections.OrderedDict(
-        [('max_session', '无'), ('avg_con', '无'), ('min_con', '无'), ('max_memory', '无')])
+        [('max_session', '无'), ('avg_con', '无'),  ('max_memory', '无')])
     if uuid is not None:
         items = MultiTest.objects.filter(task_id=uuid)
         if(items):
             dict_result['max_session'] = items.last().session_num
-            dict_result['min_con'] = items.order_by("connect_rate").first().connect_rate
+            # dict_result['min_con'] = items.order_by("connect_rate").first().connect_rate    # 最小会话速率
             sum_con = 0
             count = 0
             for item in items:
@@ -1360,7 +1364,7 @@ def vnf5_find_test_result(uuid):
         items = BGPCapacityTest.objects.filter(task_id=uuid)
         if(items):
             dict_result['router_traffic'] = items.last().router_traffic
-            dict_result['blackhole_traffic'] = items.last().blackhoule_traffic
+            dict_result['blackhole_traffic'] = items.last().blackhole_traffic
     return(dict_result)
 
 
@@ -1466,7 +1470,7 @@ def api4_vnf4_uuid(req):
         obj.set_vender = d.get('set_vender')
         obj.set_version = d.get('set_version')
         obj.set_platform = d.get('set_cloudPlatform')
-        obj.set_platform_v = d.get('set_PlatformVer')
+        obj.set_platform_v = d.get('set_platformVer')
         obj.set_vnf_type = d.get('set_vnf_type')
         obj.set_timer = d.get('set_timer')
         obj.set_router_num = d.get('set_router_num')
@@ -1475,7 +1479,7 @@ def api4_vnf4_uuid(req):
         obj.current_state = True
         obj.save()
         data = {'taskId' : taskid}
-        return HttpResponse(json.dump(data),content_type='application/json')
+        return HttpResponse(json.dumps(data),content_type='application/json')
     return HttpResponse('Permission Denied!', status=403)
 
 
@@ -1491,7 +1495,7 @@ def api4_vnf5_uuid(req):
         obj.set_vender = d.get('set_vender')
         obj.set_version = d.get('set_version')
         obj.set_platform = d.get('set_cloudPlatform')
-        obj.set_platform_v = d.get('set_PlatformVer')
+        obj.set_platform_v = d.get('set_platformVer')
         obj.set_vnf_type = d.get('set_vnf_type')
         obj.set_timer = d.get('set_timer')
         obj.set_router_num = d.get('set_router_num')
@@ -1500,7 +1504,7 @@ def api4_vnf5_uuid(req):
         obj.current_state = True
         obj.save()
         data = {'taskId' : taskid}
-        return HttpResponse(json.dump(data),content_type='application/json')
+        return HttpResponse(json.dumps(data),content_type='application/json')
     return HttpResponse('Permission Denied!', status=403)
 
 

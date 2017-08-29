@@ -234,46 +234,52 @@ $(function(){
     //整个html页面刷新
     setInterval(refresh,500);
     function refresh(){
-             $.ajax('/api/v1/if-exist-current-task/', {
-        method: 'POST',
-        data:
-          JSON.stringify({
-                  flag: 1,
-                  //csrfmiddlewaretoken: $('input[type=hidden]').val()
-              }),
-      }).done(function (data) {
-          //存在或不存在current-task时不同的表现
-         //alert(data.taskid);
-         var taskId = data.taskid;
-         console.log(taskId)
-         switch(data.tasktype)
-                  {
-                      case 'VNF_1_Concurrent_Session_Capacity':
-                          var taskType = '1';
-                      //      var casePerformance =  '<div class="timeline-box">'+
-                      //       '<div class="timeline-icon bg-primary">'+
-                      //           '<i class="fa fa-check"></i>'+
-                      //       '</div>'+
-                      //       '<div class="timeline-content">'+
-                      //            '<h5><b id="session_name"></b></h5>'+
-                      //           '<div  id="area_chart11" class="panel-content">'+
-                      //               '<iframe class="chartjs-hidden-iframe" tabindex="-1" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>'+
-                      //              '<canvas id="Session_chart" width="490" height="318" style="display: block; width: 490px; height: 318px;"></canvas>'+
-                      //           '</div>'+
-                      //       '</div>'+
-                      //   '</div>'
-                      //
-                      // var taskTimeLine = $('#taskTimeLine');
-                      // $('#taskTimeLine').append(casePerformance);
-                          break;
-                      case 'VNF_2_VBRAS_Client_Forwarding_Performance':
-                          var taskType = '2';
-                          break;
-                      case 'VNF_3_PPPoE_IPTV_IPoE_VoIP':
-                          var taskType = '3';
-                          break;
-                  }
-         if(data.taskid){
+        $.ajax('/api/v1/if-exist-current-task/', {
+            method: 'POST',
+            data:
+                JSON.stringify({
+                    flag: 1,
+                    //csrfmiddlewaretoken: $('input[type=hidden]').val()
+                }),
+        }).done(function (data) {
+            //存在或不存在current-task时不同的表现
+            //alert(data.taskid);
+            var taskId = data.taskid;
+            console.log(taskId)
+            switch(data.tasktype) {
+                case 'VNF_1_Concurrent_Session_Capacity':
+                    var taskType = '1';
+                   //      var casePerformance =  '<div class="timeline-box">'+
+                   //       '<div class="timeline-icon bg-primary">'+
+                   //           '<i class="fa fa-check"></i>'+
+                   //       '</div>'+
+                   //       '<div class="timeline-content">'+
+                   //            '<h5><b id="session_name"></b></h5>'+
+                   //           '<div  id="area_chart11" class="panel-content">'+
+                   //               '<iframe class="chartjs-hidden-iframe" tabindex="-1" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>'+
+                   //              '<canvas id="Session_chart" width="490" height="318" style="display: block; width: 490px; height: 318px;"></canvas>'+
+                   //           '</div>'+
+                   //       '</div>'+
+                   //   '</div>'
+                   //
+                   // var taskTimeLine = $('#taskTimeLine');
+                   // $('#taskTimeLine').append(casePerformance);
+                    break;
+                case 'VNF_2_VBRAS_Client_Forwarding_Performance':
+                    var taskType = '2';
+                    break;
+                case 'VNF_3_PPPoE_IPTV_IPoE_VoIP':
+                    var taskType = '3';
+                    break;
+                case 'VNF_4_ISIS_Forwarding_Capacity':
+                    var taskType = '4';
+                    break;
+                case 'VNF_5_BGP_Forwarding_Capacity':
+                    var taskType = '5';
+                    break;
+            }
+
+            if(data.taskid){
               $.ajax('/api/v1/index-save-cpu-memory', {
                 method: 'POST',
                 data:
@@ -282,7 +288,7 @@ $(function(){
                       typename:taskType,
                   }),
                 });
-              $.ajax('/api/v1/get-index-cpu/', {
+              $.ajax('/api/v1/get-index-cpu/',{
                 method: 'POST',
                 data:
                   JSON.stringify({
@@ -298,7 +304,7 @@ $(function(){
                       arrow1.setValue(value1);
                       axis1.setBottomText(value1 + " %");
                   });
-              })
+              });
 
              $.ajax('/api/v1/get-index-memory/', {
                 method: 'POST',
@@ -315,7 +321,7 @@ $(function(){
                       arrow.setValue(value);
                       axis.setBottomText(value + " %");
                  });
-                })
+                });
 
              $.ajax('/api/v1/get-index-case-performance',{
                   method: 'POST',
@@ -393,7 +399,7 @@ $(function(){
                         });
                   }
 
-              })
+              });
 
 
 
@@ -412,7 +418,6 @@ $(function(){
                       case '1':
 
 
-
                           var taskTypeTitle = 'PPPOE并发会话容量测试';
                           var currentData = '<h6>设置session数：'+ data.set_session +'</h6>' +
                                 '<h6>已完成session数：'+ data.current_session +'</h6>';
@@ -425,19 +430,36 @@ $(function(){
                           break;
                       case '2':
                           var taskTypeTitle = 'vBRAS用户侧转发性能测试';
-                          var currentData = '<h6>68字节 平均时延 <span class="code" id="FS_68">' + data.frame_size_68 + 'μs</span></h6>' +
+                          var currentData =
+                                '<h6>68字节 平均时延 <span class="code" id="FS_68">' + data.frame_size_68 + 'μs</span></h6>' +
                                 '<h6>128字节 平均时延 <span class="code" id="FS_128">' + data.frame_size_128 + 'μs</span></h6>' +
                                 '<h6>256字节 平均时延 <span class="code" id="FS_256">' + data.frame_size_256 + 'μs</span></h6>' +
                                 '<h6>512字节 平均时延 <span class="code" id="FS_512">' + data.frame_size_512 + 'μs</span></h6>' +
                                 '<h6>1024字节 平均时延 <span class="code" id="FS_1024">' + data.frame_size_1024 + 'μs</span></h6>' +
                                 '<h6>1280字节 平均时延 <span class="code" id="FS_1280">' + data.frame_size_1280 + 'μs</span></h6>' +
-                                '<h6>1518字节 平均时延 <span class="code" id="FS_1518">' + data.frame_size_1518 + 'μs</span></h6>'
-
+                                '<h6>1518字节 平均时延 <span class="code" id="FS_1518">' + data.frame_size_1518 + 'μs</span></h6>';
                           break;
                       case '3':
                           var taskTypeTitle = 'vBRAS综合上网业务测试';
-                          var currentData = '<h6>测试业务：宽带上网（PPPoE）+ IPTV（PPPoE）+ ITMS（IPoE）+ VoIP（IPoE）</h6>'
+                          var currentData = '<h6>测试业务：宽带上网（PPPoE）+ IPTV（PPPoE）+ ITMS（IPoE）+ VoIP（IPoE）</h6>';
                           break;
+                      //    modify by Aresace
+                      case '4':
+                          var taskTypeTitle = 'vBRAS ISIS路由容量测试';
+                          var currentData =
+                              '<h6>建立邻居        <span class="code" id="FS_68">' + data.adjacency_status + '</span></h6>' +
+                              '<h6>学习路由        <span class="code" id="FS_128">' + data.router_status + '</span></h6>' +
+                              '<h6>验证流量        <span class="code" id="FS_256">' + data.traffic_status + '</span></h6>' +
+                              '<h6>正常路由检测结果 <span class="code" id="FS_512">' + data.router_traffic + '</span></h6>' +
+                              '<h6>黑洞路由检测结果 <span class="code" id="FS_1024">' + data.blackhole_traffic + '</span></h6>';
+                      case '5':
+                          var taskTypeTitle = 'vBRAS BGP路由容量测试';
+                          var currentData =
+                              '<h6>建立邻居        <span class="code" id="FS_68">' + data.adjacency_status + '</span></h6>' +
+                              '<h6>学习路由        <span class="code" id="FS_128">' + data.router_status + '</span></h6>' +
+                              '<h6>验证流量        <span class="code" id="FS_256">' + data.traffic_status + '</span></h6>' +
+                              '<h6>正常路由检测结果 <span class="code" id="FS_512">' + data.router_traffic + '</span></h6>' +
+                              '<h6>黑洞路由检测结果 <span class="code" id="FS_1024">' + data.blackhole_traffic + '</span></h6>'
                   }
                   document.getElementById("taskTypeTitle").innerHTML = taskTypeTitle;
                   document.getElementById("currentData").innerHTML = currentData;
@@ -478,11 +500,12 @@ $(function(){
                   // $('#taskTimeLine').append(currentTask);
                   // $('#taskTimeLine').append(casePerformance);
 
-              })
+              });
 
-         }else{
-             alert("没有正在运行的测试用例！")
-         }
+            }
+            else{
+                alert("没有正在运行的测试用例！")
+            }
      });
     }
 });

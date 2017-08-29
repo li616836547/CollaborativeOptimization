@@ -9,9 +9,11 @@
 $("#tab-content1").css({"background":"#fff", "color":"#000"});
 $(".tab-content2").hide();
 $(".tab-content3").hide();
+$(".tab-content4").hide();
+$(".tab-content5").hide();
 $(".tab-change").click(function(e) {
 	var tabChange = $(".tab-change").children();
-  //修改tab背景字体颜色
+    //修改tab背景字体颜色
 	for (var i = 0; i < tabChange.length; i++) {
 		if(tabChange[i] == e.target){
 			tabChange[i].style.background = "#fff";
@@ -22,22 +24,42 @@ $(".tab-change").click(function(e) {
 			tabChange[i].style.color = "#fff";
 		}
 	}
-  //显示测试任务配置
+    // 显示测试任务配置
 	switch (e.target.id) {
 		case ("tab-content1"):
 			$(".tab-content1").fadeIn(1000);
 			$(".tab-content2").fadeOut();
 			$(".tab-content3").fadeOut();
+			$(".tab-content4").fadeOut();
+			$(".tab-content5").fadeOut();
 			break;
 		case ("tab-content2"):
 			$(".tab-content1").fadeOut();
 			$(".tab-content2").fadeIn(1000);
 			$(".tab-content3").fadeOut();
+            $(".tab-content4").fadeOut();
+			$(".tab-content5").fadeOut();
 			break;
 		case ("tab-content3"):
 			$(".tab-content1").fadeOut();
 			$(".tab-content2").fadeOut();
 			$(".tab-content3").fadeIn(1000);
+			$(".tab-content4").fadeOut();
+			$(".tab-content5").fadeOut();
+			break;
+		case ("tab-content4"):
+			$(".tab-content1").fadeOut();
+			$(".tab-content2").fadeOut();
+			$(".tab-content3").fadeOut();
+			$(".tab-content4").fadeIn(1000);
+			$(".tab-content5").fadeOut();
+			break;
+		case ("tab-content5"):
+			$(".tab-content1").fadeOut();
+			$(".tab-content2").fadeOut();
+			$(".tab-content3").fadeOut();
+			$(".tab-content4").fadeOut();
+			$(".tab-content5").fadeIn(1000);
 			break;
 	}
 })
@@ -372,7 +394,6 @@ for (var i = 0; i < portType.length; i++) {
 });
 
 
-
   $('#test_vBRAS_session_bg').click(function() {
       
       var session_pt = $('#test_vBRAS_session_pt').val();
@@ -467,7 +488,6 @@ if (sessionData) {
           Sp = [];
           portType = [];
 
-
       });
   }});
 
@@ -481,29 +501,30 @@ if (sessionData) {
 
       var frameData = confirm("请确认：" + "\n"+ "流量：" + frame_pt + "G" + "\n" 
       			  				+ "会话数：" + frame_sn + "\n" + "Cloudstress：" + cloudstress2);
-if (frameData) {
-	$('#test_vBRAS_frame_pt').val("");
-    $('#test_vBRAS_frame_sn').val("");
-    $("input[name='cloudstress2']:checked").each(function() {  
-        $(this).prop( "checked",false);  
-    });
-      $.ajax('/api/v1/vnf2-uuid/',{
-          type:'POST',
-          data:
-              JSON.stringify({
-                  begin: 1,
-                  set_flow: frame_pt,
-                  set_session: frame_sn,
-                  set_vender: vendor_name,
-                  set_version: version_num,
-                  set_vnf_type:netNodeNum,
-                  set_timer: 1,
-                  set_cloudPlatform: cloudPlatform,
-                  set_platformVer: platformVers,                  set_vendor: vendor_name,
-                  //current_test_type:'VNF_1_Concurrent_Session_Capacity',
-                  csrfmiddlewaretoken: $('input[type=hidden]').val()
-              }),
-      }).done(function (data) {
+      if (frameData) {
+          $('#test_vBRAS_frame_pt').val("");
+          $('#test_vBRAS_frame_sn').val("");
+          $("input[name='cloudstress2']:checked").each(function() {
+            $(this).prop( "checked",false);
+          });
+
+          $.ajax('/api/v1/vnf2-uuid/',{
+              type:'POST',
+              data:
+                  JSON.stringify({
+                      begin: 1,
+                      set_flow: frame_pt,
+                      set_session: frame_sn,
+                      set_vender: vendor_name,
+                      set_version: version_num,
+                      set_vnf_type:netNodeNum,
+                      set_timer: 1,
+                      set_cloudPlatform: cloudPlatform,
+                      set_platformVer: platformVers,                  set_vendor: vendor_name,
+                      //current_test_type:'VNF_1_Concurrent_Session_Capacity',
+                      csrfmiddlewaretoken: $('input[type=hidden]').val()
+                  }),
+          }).done(function (data) {
           // alert(data.stepId);
 
           alert("接收到data");
@@ -626,29 +647,251 @@ if (multiData) {
   }});
 
 
+// ISIS协议测试----------------------------------------------------------------------------------------------------------
+$('#test_ISIS_btn').click(function() {
 
-  $('#current_task_abort').click(function() {
+    var isis_hostNum = $('#test_isis_hostNum').val();
+    var isis_routerNum = $('#test_isis_routerNum').val();
+    var isis_routerLearnTime = $('#test_isis_routerLearnTime').val();
+    var cloudstress = $("input[name='cloudstress4']:checked").val();
+    // document.getElementById("task_name").innerHTML = 'PPPoE并发会话容量'
+    // document.getElementById("task_explain1").innerHTML = 'vBars接入性能测试'
+    // document.getElementById("task_explain2").innerHTML = '测试单台vBRAS整机最大可以支持PPPoE用户并发上线数量'
 
-      alert('abort');
-      $.ajax('/api/v1/stop-task/',{
-          type:'POST',
-          data:
-              JSON.stringify({
-                  stop: 1,
-              }),
-      }).done(function(data){
-          alert(data.current_state);
-          alert(data.task_id);
-          flag_id = data.task_id;
-          $.ajax('http://192.168.21.53:5000/TaskExecStatus/bkg',{
-          type:'POST',
-          data:
-              JSON.stringify({
-                  action: 'abort',
-                  taskId: flag_id,
-              }),
+    var ISIS_router_Data = confirm("请确认：" + "\n"+
+        "邻居数量：" + isis_hostNum + "个" + "\n"+
+        "路由容量：" + isis_routerNum + "个"+ "\n" +
+        "路由学习时间" + isis_routerLearnTime + "\n"+
+        "Cloudstress：" + cloudstress
+    );
+
+    if (ISIS_router_Data) {
+        // 清空输入框
+        $('#test_isis_hostNum').val("");
+        $('#test_isis_routerNum').val("");
+        $('#test_isis_routerLearnTime').val("");
+        $("input[name='cloudstress4']:checked").each(function() {
+            $(this).prop( "checked",false);
+        });
+
+        // 向后台发送数据
+        $.ajax('/api/v1/vnf4-uuid/',{
+            type:'POST',
+            data:
+                JSON.stringify({
+                    begin: 1,											//开始标志
+                    set_timer: 1,										//测试次数
+                    set_vender: vendor_name,							//厂商名称
+                    set_version: version_num,							//厂商版本
+                    set_cloudPlatform: cloudPlatform,					//云平台名称
+                    set_platformVer: platformVers,						//云平台版本
+                    set_vnf_type:netNodeNum,							//网元类型
+
+                    //ISIS协议测试例4的配置信息
+                    set_host_num: isis_hostNum,							//邻居数目
+                    set_router_num: isis_routerNum,						//路由容量
+                    set_router_learning_time: isis_routerLearnTime,		//路由学习时间
+
+                    //current_test_type:'VNF_1_Concurrent_Session_Capacity',
+                    csrfmiddlewaretoken: $('input[type=hidden]').val()  //传递默认值，之前的但我没找到这个节点
+
+                }),
+            success: function(msg) {
+                comments = msg;
+                console.log('uuid success');
+                console.log(msg);}
+        }).done(function (data) {
+            // alert(data.stepId);
+            alert("接收到data");
+            id = data.taskId;
+            alert(id);
+            // alert(Sp +'\n'+
+            // portType);
+            // $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
+            // 向itest发送数据
+            $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
+                type:'POST',
+                data:
+                    JSON.stringify({
+                        scripttype: 'itest',
+                        serverIp: '192.168.21.52:8000',
+                        testcase: {
+                            script: [{
+                                type: 'itest',
+                                id: 1,
+                                file: 'VNF_4_ISIS_Forwarding_Capacity.fftc',
+                            }]
+                        },
+                        taskId: id,
+                        device: {
+                            TESTER:[{
+                                "ip": ipAddr,
+                                "type": netNodeNum,
+                                "id": id,
+                                "reservePorts":Sp,
+                                "needPort": portType.length
+                            }]
+                        },
+                        parameter: [{
+							HostNum: isis_hostNum,
+							RouterNum: isis_routerNum,
+							RouterLearningTime: isis_routerLearnTime,
+							taskId: id,
+							cloudstress: cloudstress,
+
+							porttype: '10'		//这个传啥
+                        }]
+                        // csrfmiddlewaretoken: $('input[type=hidden]').val()
+                    }),
+                success: function(msg) {
+			        console.log('i-test success');
+                    console.log(msg);
+                }
+            }).done(function(data){
+                alert('i-test OK');
+                alert(data);
+                // window.location.reload();
+            });
+            Sp = [];
+            portType = [];
+        });
+    }
+});
+
+
+// BGP 协议测试----------------------------------------------------------------------------------------------------------
+$('#test_BGP_btn').click(function() {
+
+    var bgp_hostNum = $('#test_bgp_hostNum').val();
+    var bgp_routerNum = $('#test_bgp_routerNum').val();
+    var bgp_routerLearnTime = $('#test_bgp_routerLearnTime').val();
+    var cloudstress = $("input[name='cloudstress5']:checked").val();
+
+    var BGP_router_Data = confirm("请确认：" + "\n"+
+        "邻居数量：" + bgp_hostNum + "个" + "\n"+
+        "路由容量：" + bgp_routerNum + "个"+ "\n" +
+        "路由学习时间" + bgp_routerLearnTime + "\n"+
+        "Cloudstress：" + cloudstress
+    );
+
+    if (BGP_router_Data) {
+        // 清空输入框
+        $('#test_bgp_hostNum').val("");
+        $('#test_bgp_routerNum').val("");
+        $('#test_bgp_routerLearnTime').val("");
+        $("input[name='cloudstress5']:checked").each(function() {
+            $(this).prop( "checked",false);
+        });
+
+        // 向后台发送数据
+        $.ajax('/api/v1/vnf5-uuid/',{
+            type:'POST',
+            data:
+                JSON.stringify({
+                    begin: 1,											//开始标志
+                    set_timer: 1,										//测试次数
+                    set_vender: vendor_name,							//厂商名称
+                    set_version: version_num,							//厂商版本
+                    set_cloudPlatform: cloudPlatform,					//云平台名称
+                    set_platformVer: platformVers,						//云平台版本
+                    set_vnf_type:netNodeNum,							//网元类型
+
+                    //ISIS协议测试例4的配置信息
+                    set_host_num: bgp_hostNum,							//邻居数目
+                    set_router_num: bgp_routerNum,						//路由容量
+                    set_router_learning_time: bgp_routerLearnTime,		//路由学习时间
+
+                    //current_test_type:'VNF_1_Concurrent_Session_Capacity',
+                    csrfmiddlewaretoken: $('input[type=hidden]').val()  //传递默认值，之前的但我没找到这个节点
+
+                }),
+            success: function(msg) {
+                comments = msg;
+                console.log('uuid success');
+                console.log(msg);
+            }
+        }).done(function (data) {
+            // alert(data.stepId);
+            alert("接收到data");
+            id = data.taskId;
+            alert(id);      //前端显示taskId
+            // alert(Sp +'\n'+
+            // portType);
+            // $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
+            // 向itest发送数据
+            $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
+                type:'POST',
+                data:
+                    JSON.stringify({
+                        scripttype: 'itest',
+                        serverIp: '192.168.21.52:8000',
+                        testcase: {
+                            script: [{
+                                type: 'itest',
+                                id: 1,
+                                file: 'VNF_5_BGP_Forwarding_Capacity.fftc',
+                            }]
+                        },
+                        taskId: id,
+                        device: {
+                            TESTER:[{
+                                "ip": ipAddr,
+                                "type": netNodeNum,
+                                "id": id,
+                                "reservePorts":Sp,
+                                "needPort": portType.length
+                            }]
+                        },
+                        parameter: [{
+							HostNum: bgp_hostNum,
+							RouterNum: bgp_routerNum,
+							RouterLearningTime: bgp_routerLearnTime,
+							taskId: id,
+							cloudstress: cloudstress,
+
+							porttype: '10'		//这个传啥
+                        }]
+                        // csrfmiddlewaretoken: $('input[type=hidden]').val()
+                    }),
+                success: function(msg) {
+			        console.log('i-test success');
+                    console.log(msg);
+                }
+            }).done(function(data){
+                alert('i-test OK');
+                alert(data);
+                // window.location.reload();
+            });
+            Sp = [];
+            portType = [];
+        });
+    }
+});
+
+
+// 测试任务停止-----------------------------------------------------------------------------------------------------------
+$('#current_task_abort').click(function() {
+
+    alert('abort');
+    $.ajax('/api/v1/stop-task/',{
+      type:'POST',
+      data:
+          JSON.stringify({
+              stop: 1,
+          }),
+    }).done(function(data){
+        alert(data.current_state);
+        alert(data.task_id);
+        flag_id = data.task_id;
+        $.ajax('http://192.168.21.53:5000/TaskExecStatus/bkg',{
+            type:'POST',
+            data:
+            JSON.stringify({
+                action: 'abort',
+                taskId: flag_id,
+            }),
         }).done(function () {
-              //window.location.reload();
-          })
-      });
-  });
+          //window.location.reload();
+        })
+    });
+});
