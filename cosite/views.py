@@ -10,8 +10,8 @@ import pytz
 # import numpy
 import math
 import collections
-import logging
-import logging.config
+# import # logging
+# import # logging.config
 from django.db.models import Max
 # from sklearn.svm import SVC
 # from sklearn.neighbors import KNeighborsClassifier
@@ -31,9 +31,7 @@ from influxdb import InfluxDBClient
 # 捕获值永远都是字符串（string）类型，而不会是整数（integer）类型
 # 捕获值总是Unicode objects
 
-# ###############################2017-8-29 引入logging.conf############################
-# logging.config.fileConfig('logging.conf')
-# logger = logging.getLogger('log01')
+
 
 
 # #####################################禹峰8.2#################################################
@@ -220,6 +218,7 @@ def report_frame(req):
 # test
 def api4_test(req):
     if req.method == 'POST':
+        # logger.info('开始对前后端进行测试')
         temp = req.POST
         print(temp)
         d = json.loads(req.body.decode('utf-8'))
@@ -281,46 +280,164 @@ def api4_test2(req):
     return HttpResponse('Permission denied!', status=403)
 
 
-# VNF_1_Concurrent_Session_Capacity
-# 获取到前台发送的指令，主要是为生成uuid后返回给前台
-# def api4_vnf1_uuid(req):
-#    if req.method == 'POST':
-#
-#       d = json.loads(req.body.decode('utf-8'))#获取请求内容
-#        beginflag = d.get('begin')
-#        if beginflag == 1:
-#            taskid = uuid.uuid1()
-#             #uuid1()——基于时间戳
-#             #由MAC地址、当前时间戳、随机数生成。可以保证全球范围内的唯一性
-#             #但MAC的使用同时带来安全性问题，局域网中可以使用IP来代替MAC。
-#            taskid = str(taskid)
-#
-#        obj = TestCaseState()
-#        obj.task_id = taskid
-#        obj.set_session = d.get('set_session')
-#        obj.set_flow = d.get('set_flow')
-#        obj.current_state = True
-#        #mt.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-#        #obj.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-#        obj.type_name = 'VNF_1_Concurrent_Session_Capacity'
-#        obj.save()#存储到数据库
-#        data = {'taskId': taskid}
-#       return HttpResponse(json.dumps(data), content_type='application/json')
-#  return HttpResponse('Permission denied!', status=403)
+# 20170803修改，在原来的基础上增加了厂商、VNF类型、版本号、测试次数、上线速率等信息。
+# 获取到前台送的指令，新建测试用例时，从前端向后端传入测试基本信息，存储到数据库，并生成uuid后返回给前台
+def api4_vnf1_uuid(req):
+    if req.method == 'POST':
+        # logger.info('接收到开始测试指令')
+        d = json.loads(req.body.decode('utf-8'))
+        beginflag = d.get('begin')
+        if beginflag == 1:
+            taskid = uuid.uuid1()
+            # uuid1()——基于时间戳
+            # 由MAC地址、当前时间戳、随机数生成。可以保证全球范围内的唯一性，
+            # 但MAC的使用同时带来安全性问题，局域网中可以使用IP来代替MAC。
+            taskid = str(taskid)
+
+        obj = TestCaseState()
+        obj.task_id = taskid
+        obj.set_session = d.get('set_session')
+        obj.set_flow = d.get('set_flow')
+        obj.set_version = d.get('set_version')
+        obj.set_vnf_type = d.get('set_vnf_type')
+        obj.set_vender=d.get('set_vender')
+        obj.set_timer = d.get('set_timer')
+        obj.set_online_rate = d.get('set_online_rate')
+        obj.set_platform = d.get('set_cloudPlatform')
+        obj.set_platform_v = d.get('set_platformVer')
+        obj.current_state = True
+        obj.type_name = 'VNF_1_Concurrent_Session_Capacity'
+        obj.save()                # 存储到数据库
+        data = {'taskId': taskid }
+        # logger.info('已储存测试用例基本信息，task_id: %s' % str(taskid))
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    return HttpResponse('Permission denied!', status=403)
+
+
+def api4_vnf2_uuid(req):
+    if req.method == 'POST':
+        # logger.info('接收到开始测试指令')
+        d = json.loads(req.body.decode('utf-8'))
+        beginflag = d.get('begin')
+        if beginflag == 1:
+            taskid = uuid.uuid1()
+            taskid = str(taskid)
+        obj = TestCaseState()
+        obj.task_id = taskid
+        obj.set_session = d.get('set_session')
+        obj.set_flow = d.get('set_flow')
+        obj.set_version = d.get('set_version')
+        obj.set_vnf_type = d.get('set_vnf_type')
+        obj.set_vender=d.get('set_vender')
+        obj.set_timer = d.get('set_timer')
+        obj.set_platform = d.get('set_cloudPlatform')
+        obj.set_platform_v = d.get('set_platformVer')
+        obj.current_state = True
+        # mt.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        # obj.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        obj.type_name = 'VNF_2_VBRAS_Client_Forwarding_Performance'
+        obj.save()
+        data = {'taskId': taskid}
+        # logger.info('已储存测试用例基本信息，task_id: %s' % str(taskid))
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    return HttpResponse('Permission denied!', status=403)
+
+
+def api4_vnf3_uuid(req):
+    if req.method == 'POST':
+        # logger.info('接收到开始测试指令')
+        d = json.loads(req.body.decode('utf-8'))
+        beginflag = d.get('begin')
+        if beginflag == 1:
+            taskid = uuid.uuid1()
+            taskid = str(taskid)
+
+        obj = TestCaseState()
+        obj.task_id = taskid
+        obj.set_session = d.get('set_session')
+        obj.set_flow = d.get('set_flow')
+        obj.set_version = d.get('set_version')
+        obj.set_vnf_type = d.get('set_vnf_type')
+        obj.set_vender = d.get('set_vender')
+        obj.set_timer = d.get('set_timer')
+        obj.set_platform = d.get('set_cloudPlatform')
+        obj.set_platform_v = d.get('set_platformVer')
+        obj.current_state = True
+        # mt.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        # obj.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        obj.type_name = 'VNF_3_PPPoE_IPTV_IPoE_VoIP'
+        obj.save()
+        data = {'taskId': taskid}
+        # logger.info('已储存测试用例基本信息，task_id: %s' % str(taskid))
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    return HttpResponse('Permission denied!', status=403)
+
+
+# ###########################################2017-8-28 新增两个测试用例（ISIS、BGP）#####################################
+def api4_vnf4_uuid(req):
+    if req.method == 'POST':
+        # logger.info('接收到开始测试指令')
+        d = json.loads(req.body.decode('utf-8'))
+        beginflag = d.get('begin')
+        if beginflag == 1:
+            taskid = str(uuid.uuid1())
+        obj = TestCaseState()
+        obj.type_name = 'VNF_4_ISIS_Forwarding_Capacity'
+        obj.task_id = taskid
+        obj.set_vender = d.get('set_vender')
+        obj.set_version = d.get('set_version')
+        obj.set_platform = d.get('set_cloudPlatform')
+        obj.set_platform_v = d.get('set_platformVer')
+        obj.set_vnf_type = d.get('set_vnf_type')
+        obj.set_timer = d.get('set_timer')
+        obj.set_router_num = d.get('set_router_num')
+        obj.set_host_num = d.get('set_host_num')
+        obj.set_router_learning_time = d.get('set_router_learning_time')
+        obj.current_state = True
+        obj.save()
+        data = {'taskId' : taskid}
+        # logger.info('已储存测试用例基本信息，task_id: %s' % str(taskid))
+        return HttpResponse(json.dumps(data),content_type='application/json')
+    return HttpResponse('Permission Denied!', status=403)
+
+
+def api4_vnf5_uuid(req):
+    if req.method == 'POST':
+        # logger.info('接收到开始测试指令')
+        d = json.loads(req.body.decode('utf-8'))
+        beginflag = d.get('begin')
+        if beginflag == 1:
+            taskid = str(uuid.uuid1())
+        obj = TestCaseState()
+        obj.type_name = 'VNF_5_BGP_Forwarding_Capacity'
+        obj.task_id = taskid
+        obj.set_vender = d.get('set_vender')
+        obj.set_version = d.get('set_version')
+        obj.set_platform = d.get('set_cloudPlatform')
+        obj.set_platform_v = d.get('set_platformVer')
+        obj.set_vnf_type = d.get('set_vnf_type')
+        obj.set_timer = d.get('set_timer')
+        obj.set_router_num = d.get('set_router_num')
+        obj.set_host_num = d.get('set_host_num')
+        obj.set_router_learning_time = d.get('set_router_learning_time')
+        obj.current_state = True
+        obj.save()
+        data = {'taskId' : taskid}
+        # logger.info('已储存测试用例基本信息，task_id: %s' % str(taskid))
+        return HttpResponse(json.dumps(data),content_type='application/json')
+    return HttpResponse('Permission Denied!', status=403)
 
 
 # VNF_1_Concurrent_Session_Capacity
 # 接受iTest返回的结果，并将结果存入数据库
 def api4_vnf1_itest(req):
     if req.method == 'POST':
-        # temp = req.POST
-        # print(temp)
+        # logger.info('接收到itest的测试结果')
         d = json.loads(req.body.decode('utf-8'))
         obj = PPPoESessionTest()
         # m = PPPoESessionTest().object.all()
         # print(m[0].title)
         obj.task_id = d.get('taskId')
-        print("##################################", d.get('taskId'))
         result = d.get('testresult')
         obj.session_num = result['session_num']
         obj.add_time = result['add_time']
@@ -332,24 +449,8 @@ def api4_vnf1_itest(req):
         else:
             obj.save()
 
-        # print('-----')
-        # print("set_session::::" + str(TestCaseState.objects.get(task_id=d.get('taskId')).set_session))
-        # print("current_session::::" + str(result['session_num']))
-        # print('-----')
-
-        # set_session = TestCaseState.objects.get(task_id=d.get('taskId')).set_session
-        # cur_session = int(result['session_num'])
-        #
-        # if set_session == cur_session:
-        #     print('same!!!')
-        #     cur_obj = TestCaseState.objects.get(current_state=True)
-        #
-        #     if cur_obj:
-        #         cur_obj.current_state = False
-        #         cur_obj.save()
-        #         print('save change to false already!!!!!!')
-
         data = {'log': 'test'}
+        # logger.info('已存储itest的测试结果，task_id: %s' % str(obj.task_id))
         return HttpResponse(json.dumps(data), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
 
@@ -358,8 +459,7 @@ def api4_vnf1_itest(req):
 # 接受iTest返回的结果，并将结果存入数据库
 def api4_vnf2_itest(req):
     if req.method == 'POST':
-        # temp = req.POST
-        # print(temp)
+        # logger.info('接收到itest的测试结果')
         d = json.loads(req.body.decode('utf-8'))
 
         obj = UserTransTest()
@@ -379,45 +479,16 @@ def api4_vnf2_itest(req):
             obj.save()
 
         data = {'log': 'test'}
+        # logger.info('已存储itest的测试结果，task_id: %s' % str(obj.task_id))
         return HttpResponse(json.dumps(data), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
-# VNF_3_PPPoE_IPTV_IPoE_VoIP
-# 获取到前台发送的指令，主要是为生成uuid后返回给前台
-# def api4_vnf3_uuid(req):
-#     if req.method == 'POST':
-#         # temp = req.POST
-#         # print(temp)
-#
-#         d = json.loads(req.body.decode('utf-8'))
-#         beginflag = d.get('begin')
-#         if beginflag == 1:
-#             taskid = uuid.uuid1()
-#             taskid = str(taskid)
-#
-#         obj = TestCaseState()
-#         obj.task_id = taskid
-#         obj.set_session = d.get('set_session')
-#         obj.set_flow = d.get('set_flow')
-#         obj.current_state = True
-#
-#         # obj.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-#         obj.type_name = 'VNF_3_PPPoE_IPTV_IPoE_VoIP'
-#         obj.save()
-#
-#         # pst = MultiTest()
-#         # pst.task_id = taskid
-#         # pst.save()
-#         # 删除测试条目
-#         # PPPoESessionTest.objects.filter(task_id='6d306a8a-402f-11e7-a90f-ac728980a78b').delete()
-#         data = {'taskId': taskid}
-#         return HttpResponse(json.dumps(data), content_type='application/json')
-#     return HttpResponse('Permission denied!', status=403)
 
 
 # VNF_3_PPPoE_IPTV_IPoE_VoIP
 # 接受iTest返回的结果，并将结果存入数据库
 def api4_vnf3_itest(req):
     if req.method == 'POST':
+        # logger.info('接收到itest的测试结果')
         # temp = req.POST
         # print(temp)
         d = json.loads(req.body.decode('utf-8'))
@@ -444,6 +515,7 @@ def api4_vnf3_itest(req):
             obj.save()
 
         data = {'log': 'test'}
+        # logger.info('已存储itest的测试结果，task_id: %s' % str(obj.task_id))
         return HttpResponse(json.dumps(data), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
 
@@ -453,6 +525,7 @@ def api4_vnf3_itest(req):
 # 接收itest的结果，并把结果返回数据库
 def api4_vnf4_itest(req):
     if req.method == 'POST':
+        # logger.info('接收到itest的测试结果')
         d = json.loads(req.body.decode('utf-8'))
         # 编码：把一个Python对象编码转换成Json字符串   json.dumps()
         # 解码：把Json格式字符串解码转换成Python对象   json.loads()
@@ -470,6 +543,7 @@ def api4_vnf4_itest(req):
         else:
             obj.save()
         data = {'log': 'test'}
+        # logger.info('已存储itest的测试结果，task_id: %s' % str(obj.task_id))
         return HttpResponse(json.dumps(data), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
 
@@ -478,6 +552,7 @@ def api4_vnf4_itest(req):
 # 接收itest的结果，并把结果返回数据库
 def api4_vnf5_itest(req):
     if req.method == 'POST':
+        # logger.info('接收到itest的测试结果')
         d = json.loads(req.body.decode('utf-8'))
         # 编码：把一个Python对象编码转换成Json字符串   json.dumps()
         # 解码：把Json格式字符串解码转换成Python对象   json.loads()
@@ -495,6 +570,7 @@ def api4_vnf5_itest(req):
         else:
             obj.save()
         data = {'log': 'test'}
+        # logger.info('已存储itest的测试结果，task_id: %s' % str(obj.task_id))
         return HttpResponse(json.dumps(data), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
 
@@ -505,8 +581,7 @@ def api4_vnf5_itest(req):
 # 接收log并保存至数据库
 def api4_log(req):
     if req.method == 'POST':
-        # temp = req.POST
-        # print(temp)
+        # logger.info('接收到log')
         d = json.loads(req.body.decode('utf-8'))
         obj = Log()
         obj.task_id = d.get('taskId')
@@ -529,13 +604,13 @@ def api4_final_result(req):
         obj.task_id = d.get('taskId')
         obj.final_result = d.get('final_result')
         obj.add_time = d.get('add_time')
-
         obj.save()
 
         cur_obj = TestCaseState.objects.get(current_state=True)
 
         if cur_obj:
             cur_obj.current_state = False
+
             cur_obj.save()
 
         data = {'log': 'test'}
@@ -548,13 +623,13 @@ def api4_stop_task(req):
     if req.method == 'POST':
         # temp = req.POST
         # print(temp)
+
         d = json.loads(req.body.decode('utf-8'))
-        print(d)
         # task_id = d.get('taskID')
         stop_flag = d.get('stop')
 
         if stop_flag == 1:
-            # logging.INFO('停止测试！')
+            # logger.info('收到停止测试指令，正在停止测试...')
             current_task = TestCaseState.objects.get(current_state=True)
             current_task.current_state = False
             current_task.save()
@@ -569,13 +644,15 @@ def api4_stop_task(req):
 def api4_if_exist_current_task(req):
     if req.method == 'POST':
         d = json.loads(req.body.decode('utf-8'))
-        print(d)
+        # logger.info('req.body is: %s' % str(d))
 
-        obj = TestCaseState.objects.get(current_state=True)
+        obj_filter = TestCaseState.objects.filter(current_state=True)
         # 查询符合条件的这条数据,如果是多条和没有的时候会报错,尽量结合
-        if obj:
+        if obj_filter:
+            obj = obj_filter.first()
             data = {'taskid': str(obj.task_id), 'tasktype': obj.type_name}
         else:
+            print('没有正在运行的测试用例')
             data = {'taskid': 0}
         return HttpResponse(json.dumps(data), content_type='application/json')
         # return HttpResponse(json.dumps(data), content_type='application/json')
@@ -598,14 +675,23 @@ def api4_save_cpu_memory(req):
 
         print("Result:{0}".format(result_mea))
         # 显示measurements中的libvirt_domain_metrics的最新的一条数据,返回ResultSet
-        # result = client.query(
-        #     'select "cpu_time_pct","mem_rss","mem_actual","time" from "libvirt_domain_metrics"')
-        result = client.query('select "di_cpu_time_pct","mem_rss","mem_actual","time" from "libvirt_domain_metrics" where  "libvirt_domain" = \'t1\' and time>now() - 100s limit 1')    # where time>now() - 60s limit 1')
-        print('!!!!!!resulet length!!!',len(list(result)))
+        obj = TestCaseState.objects.get(task_id=uuid.UUID(task_id))
+        vender = obj.set_vender
+        dict_virtual_machine = {'zhongXing': 't1',
+                                'huaWei': 't1',
+                                'nokia': 't1',
+                                'cisco': 't1',
+                                'ericsson': 't1',
+                                'certus': 'dp',
+                                'h3c': 'instance-0000005b'}   # 不同厂商对应的不同的vBRAS虚拟机名称
+        virtual_machine = dict_virtual_machine[vender]
+        str_sql = 'select "di_cpu_time_pct","mem_rss","mem_actual","time" from "libvirt_domain_metrics" where "libvirt_domain" = \''  + virtual_machine + '\' and time>now() - 10s limit 1'
+        print(str_sql)
+        result = client.query(str_sql)
+        # result = client.query('select "di_cpu_time_pct","mem_rss","mem_actual","time" from "libvirt_domain_metrics" where  "libvirt_domain" = \'t1\' and time>now() - 100s limit 1')    # where time>now() - 60s limit 1')
+        print('!!!!!!result length!!!', len(list(result)))
         # 返回list
         result_point = list(result.get_points(measurement='libvirt_domain_metrics'))
-        # print("show result_point::" + result_point)
-        # print(result_point.length)
         print("show length of result_point::" + str(len(result_point)))
 
         print(result_point)  # 输出一个dict结构的字段
@@ -644,6 +730,7 @@ def api4_save_cpu_memory(req):
             time_temp = utc_to_local(time_value.split('.')[0] + 'Z') + int(time_value.split('.')[0].split(':')[2])
             new_obj.add_time = time_temp
             new_obj.save()
+            # logger.debug('已保存CPUMemory信息至数据库')
 
         data = {}
 
@@ -674,7 +761,7 @@ def api4_get_index_cpu(req):
                 time_value = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))).split(' ')
                 rst['add_time'] = time_value[1]
                 # rst['add_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))
-                rst['cpu'] = round(item.cpu,2)#此处去memory值小数点后两位
+                rst['cpu'] = round(item.cpu, 2) # 此处去memory值小数点后两位
                 data.append(rst)
 
         return HttpResponse(json.dumps(data), content_type='application/json')
@@ -686,7 +773,7 @@ def api4_get_index_memory(req):
     if req.method == 'POST':
 
         d = json.loads(req.body.decode('utf-8'))
-        print(d)
+        # logger.info('req.body is: %s' % str(d))
         flag = d.get('flag')
         task_id = d.get('taskid')
 
@@ -705,8 +792,10 @@ def api4_get_index_memory(req):
                 time_value = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))).split(' ')
                 rst['add_time'] = time_value[1]
                 # rst['add_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))
-                rst['memory'] = round(item.memory,2)#此处去memory值小数点后两位
+                rst['memory'] = round(100*item.memory, 2)#此处去memory值小数点后两位
                 data.append(rst)
+        else:
+            data.append({'add_time':0,'memory':0})
 
         return HttpResponse(json.dumps(data), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
@@ -744,75 +833,38 @@ def api4_index_task_details(req):
 
         if tasktype == '1':
             # 待测代码
-            print("页面右侧的测试用例运行详情",taskid)
+            print("页面右侧的测试用例运行详情", taskid)
             set_session = TestCaseState.objects.get(task_id=taskid).set_session
-            current_session = PPPoESessionTest.objects.filter(task_id=taskid).last().session_num
+            if PPPoESessionTest.objects.filter(task_id=taskid):
+                current_session = PPPoESessionTest.objects.filter(task_id=taskid).last().session_num
             # 终止测试用例
-            if set_session == current_session:
-                print('same!!!')
-                cur_obj = TestCaseState.objects.get(current_state=True)
+                if set_session == current_session:
+                    print('same!!!')
+                    cur_obj = TestCaseState.objects.get(current_state=True)
 
-                if cur_obj:
-                    cur_obj.current_state = False
-                    cur_obj.save()
-                    print('save change to false already!!!!!!')
+                    if cur_obj:
+                        cur_obj.current_state = False
+                        cur_obj.save()
+                        print('save change to false already!!!!!!')
 
-            data = {'set_session': set_session, 'current_session': current_session, 'begin_time': begin_time}
-            # 测试数据
-            # data = {'set_session': 10000, 'current_session': 8000, 'begin_time': '2017-06-06 10:00'}
-
+                data = {'set_session': set_session, 'current_session': current_session, 'begin_time': begin_time}
+                # 测试数据
+                # data = {'set_session': 10000, 'current_session': 8000, 'begin_time': '2017-06-06 10:00'}
+            else:
+                data = {'set_session': set_session, 'current_session': 0}
         elif tasktype == '2':
             # 待测代码
             obj = UserTransTest.objects.filter(task_id=taskid)
             set_session = TestCaseState.objects.get(task_id=taskid).set_session
-            obj_68 = obj.filter(frame_size=68).last()
-            if obj_68:
-                frame_size_68 = obj_68.avg_latency
-            else:
-                frame_size_68 = 0
-
-            obj_128 = obj.filter(frame_size=128).last()
-            if obj_128:
-                frame_size_128 = obj_128.avg_latency
-            else:
-                frame_size_128 = 0
-
-            obj_256 = obj.filter(frame_size=256).last()
-            if obj_256:
-                frame_size_256 = obj_256.avg_latency
-            else:
-                frame_size_256 = 0
-
-            obj_512 = obj.filter(frame_size=512).last()
-            if obj_512:
-                frame_size_512 = obj_512.avg_latency
-            else:
-                frame_size_512 = 0
-
-            obj_1024 = obj.filter(frame_size=1024).last()
-            if obj_1024:
-                frame_size_1024 = obj_1024.avg_latency
-            else:
-                frame_size_1024 = 0
-
-            obj_1280 = obj.filter(frame_size=1280).last()
-            if obj_1280:
-                frame_size_1280 = obj_1280.avg_latency
-            else:
-                frame_size_1280 = 0
-
-            obj_1518 = obj.filter(frame_size=1518).last()
-            if obj_1518:
-                frame_size_1518 = obj_1518.avg_latency
-            else:
-                frame_size_1518 = 0
-
-            data = {'set_session': set_session, 'current_session': 0,
-                    'frame_size_68': frame_size_68, 'frame_size_128': frame_size_128,
-                    'frame_size_256': frame_size_256, 'frame_size_512': frame_size_512,
-                    'frame_size_1024': frame_size_1024, 'frame_size_1280': frame_size_1280,
-                    'frame_size_1518': frame_size_1518, 'begin_time': begin_time}
-
+            frame_sizes = [68, 128, 256, 512, 1024, 1280, 1518]
+            data = {'set_session': set_session, 'current_session': 0,'begin_time': begin_time}
+            for frame_size in frame_sizes:
+                obj_true_size = obj.filter(frame_size=frame_size).last()
+                str_frame_size = 'frame_size_' + str(frame_size)  # 将要在data字典中添加的key的名称，例:'frame_size_68'
+                if obj_true_size:
+                    data[str_frame_size] = obj_true_size.avg_latency
+                else:
+                    data[str_frame_size] = 0
             # 测试数据
             # data = {'set_session': 10000, 'current_session': 7000,
             #         'frame_size_64': 100, 'frame_size_128': 80, 'frame_size_256': 30,
@@ -876,7 +928,7 @@ def api4_history_task_list(req):
         print('=====')
         print(end_time)
         items = TestCaseState.objects.only('add_time', 'type_name') \
-            .filter(add_time__gt=start_time, add_time__lt=end_time).all()
+            .filter(add_time__gt=start_time, add_time__lt=end_time).all().order_by('add_time')
         result = []
         for item in items:
             rst = {}
@@ -905,8 +957,16 @@ def api4_query_task_cpu(req):
         task_type = d.get('tasktype')
 
         if task_type == '1':
-            # 待测代码
             items = PPPoESessionTest.objects.filter(task_id=taskid)
+        elif task_type == '2':
+            items = UserTransTest.objects.filter(task_id=taskid)
+        elif task_type == '3':
+            items = MultiTest.objects.filter(task_id=taskid)
+        elif task_type == '4':
+            items = ISISCapacityTest.objects.filter(task_id=taskid)
+        elif task_type == '5':
+            items = BGPCapacityTest.objects.filter(task_id=taskid)
+        if task_type in ['1', '2', '3', '4', '5']:
             for item in items:
                 rst = {}
                 # rst['add_time'] = item.add_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -916,91 +976,14 @@ def api4_query_task_cpu(req):
                 current_session = item.session_num
                 set_session = TestCaseState.objects.get(task_id=taskid).set_session
                 # cpu利用率
-                obj = CPUMemory.objects.filter(add_time__gt=item.add_time).first()
+                obj = CPUMemory.objects.filter(task_id=taskid).last()
                 cpu = obj.cpu
                 # 性能资源比
                 cpu_res_rate = (current_session/set_session)/cpu
                 rst['cpu'] = cpu_res_rate
                 result.append(rst)
-
-            # 测试数据
-            # result = [{'cpu': 0.15, 'add_time': '2017-06-01 10:00:13'},
-            #           {'cpu': 0.21, 'add_time': '2017-06-01 10:00:16'},
-            #           {'cpu': 0.33, 'add_time': '2017-06-01 10:00:19'},
-            #           {'cpu': 0.32, 'add_time': '2017-06-01 10:00:22'},
-            #           {'cpu': 0.45, 'add_time': '2017-06-01 10:00:25'},
-            #           {'cpu': 0.57, 'add_time': '2017-06-01 10:00:28'},
-            #           {'cpu': 0.66, 'add_time': '2017-06-01 10:00:31'},
-            #           {'cpu': 0.89, 'add_time': '2017-06-01 10:00:35'},
-            #           {'cpu': 0.90, 'add_time': '2017-06-01 10:00:38'},
-            #           {'cpu': 0.93, 'add_time': '2017-06-01 10:00:41'}]
-
-        elif task_type == '2':
-            # 待测代码
-            items = UserTransTest.objects.filter(task_id=taskid)
-            for item in items:
-                rst = {}
-                # rst['add_time'] = item.add_time.strftime('%Y-%m-%d %H:%M:%S')
-                time_value = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))).split(' ')
-                rst['add_time'] = time_value[1]
-                # 转发速率
-                rx_rate = item.rx_rate
-                # cpu利用率
-                obj = CPUMemory.objects.filter(add_time__gt=item.add_time).first()
-                cpu = obj.cpu
-                # 性能资源比
-                cpu_res_rate = rx_rate/cpu
-                rst['cpu'] = cpu_res_rate
-                result.append(rst)
-
-            # 测试数据
-            # result = [{'cpu': 0.15, 'add_time': '2017-06-02 12:00:13'},
-            #           {'cpu': 0.21, 'add_time': '2017-06-02 12:00:16'},
-            #           {'cpu': 0.33, 'add_time': '2017-06-02 12:00:19'},
-            #           {'cpu': 0.32, 'add_time': '2017-06-02 12:00:22'},
-            #           {'cpu': 0.45, 'add_time': '2017-06-02 12:00:25'},
-            #           {'cpu': 0.57, 'add_time': '2017-06-02 12:00:28'},
-            #           {'cpu': 0.66, 'add_time': '2017-06-02 12:00:31'},
-            #           {'cpu': 0.89, 'add_time': '2017-06-02 12:00:35'},
-            #           {'cpu': 0.90, 'add_time': '2017-06-02 12:00:38'},
-            #           {'cpu': 0.93, 'add_time': '2017-06-02 12:00:41'}]
-
-        elif task_type == '3':
-            # 待测代码
-            items = MultiTest.objects.filter(task_id=taskid)
-            for item in items:
-                rst = {}
-                # rst['add_time'] = item.add_time.strftime('%Y-%m-%d %H:%M:%S')
-                time_value = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))).split(' ')
-                rst['add_time'] = time_value[1]
-                # 转发速率
-                rx_rate = item.rx_rate
-                # 上线速率
-                current_session = item.session_num
-                set_session = TestCaseState.objects.get(task_id=taskid).set_session
-                # cpu利用率
-                obj = CPUMemory.objects.filter(add_time__gt=item.add_time).first()
-                cpu = obj.cpu
-                # 性能资源比
-                cpu_res_rate = (rx_rate+current_session/set_session)/cpu
-                rst['cpu'] = cpu_res_rate
-                result.append(rst)
-
-            # 测试数据
-            # result = [{'cpu': 0.15, 'add_time': '2017-06-03 13:00:13'},
-            #           {'cpu': 0.21, 'add_time': '2017-06-03 13:00:16'},
-            #           {'cpu': 0.33, 'add_time': '2017-06-03 13:00:19'},
-            #           {'cpu': 0.32, 'add_time': '2017-06-03 13:00:22'},
-            #           {'cpu': 0.45, 'add_time': '2017-06-03 13:00:25'},
-            #           {'cpu': 0.57, 'add_time': '2017-06-03 13:00:28'},
-            #           {'cpu': 0.66, 'add_time': '2017-06-03 13:00:31'},
-            #           {'cpu': 0.89, 'add_time': '2017-06-03 13:00:35'},
-            #           {'cpu': 0.90, 'add_time': '2017-06-03 13:00:38'},
-            #           {'cpu': 0.93, 'add_time': '2017-06-03 13:00:41'}]
-
         else:
-            result = {}
-
+            result = []
         return HttpResponse(json.dumps(result), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
 
@@ -1014,105 +997,46 @@ def api4_query_task_memory(req):
         taskid = d.get('taskid')
         task_type = d.get('tasktype')
         if task_type == '1':
-            # 待测代码
             items = PPPoESessionTest.objects.filter(task_id=taskid)
+        elif task_type == '2':
+            items = UserTransTest.objects.filter(task_id=taskid)
+        elif task_type == '3':
+            items = MultiTest.objects.filter(task_id=taskid)
+        elif task_type == '4':
+            items = ISISCapacityTest.objects.filter(task_id=taskid)
+        elif task_type == '5':
+            items = BGPCapacityTest.objects.filter(task_id=taskid)
+        if task_type in ['1', '2', '3', '4', '5']:
             for item in items:
                 rst = {}
-                # rst['add_time'] = item.add_time.strftime('%Y-%m-%d %H:%M:%S')
-                # rst['add_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))
                 time_value = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))).split(' ')
                 rst['add_time'] = time_value[1]
                 # 上线速率
                 current_session = item.session_num
                 set_session = TestCaseState.objects.get(task_id=taskid).set_session
                 # memory利用率
-                obj = CPUMemory.objects.filter(add_time__gt=item.add_time).first()
+                obj = CPUMemory.objects.filter(task_id=taskid).last()
                 memory = obj.memory
 
                 # 性能资源比
                 memory_res_rate = (current_session / set_session) / memory
                 rst['memory'] = memory_res_rate
                 result.append(rst)
-
-            # 测试数据
-            # result = [{'memory': 0.15, 'add_time': '2017-06-01 10:00:13'},
-            #           {'memory': 0.21, 'add_time': '2017-06-01 10:00:16'},
-            #           {'memory': 0.33, 'add_time': '2017-06-01 10:00:19'},
-            #           {'memory': 0.32, 'add_time': '2017-06-01 10:00:22'},
-            #           {'memory': 0.45, 'add_time': '2017-06-01 10:00:25'},
-            #           {'memory': 0.57, 'add_time': '2017-06-01 10:00:28'},
-            #           {'memory': 0.66, 'add_time': '2017-06-01 10:00:31'},
-            #           {'memory': 0.89, 'add_time': '2017-06-01 10:00:35'},
-            #           {'memory': 0.90, 'add_time': '2017-06-01 10:00:38'},
-            #           {'memory': 0.93, 'add_time': '2017-06-01 10:00:41'}]
-
-        elif task_type == '2':
-            # 待测代码
-            items = UserTransTest.objects.filter(task_id=taskid)
-            for item in items:
-                rst = {}
-                # rst['add_time'] = item.add_time.strftime('%Y-%m-%d %H:%M:%S')
-                time_value = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))).split(' ')
-                rst['add_time'] = time_value[1]
-                # 转发速率
-                rx_rate = item.rx_rate
-                # cpu利用率
-                obj = CPUMemory.objects.filter(add_time__gt=item.add_time).first()
-                memory = obj.memory
-                # 性能资源比
-                memory_res_rate = rx_rate / memory
-                rst['memory'] = memory_res_rate
-                result.append(rst)
-
-            # 测试数据
-            # result = [{'memory': 0.15, 'add_time': '2017-06-02 12:00:13'},
-            #           {'memory': 0.21, 'add_time': '2017-06-02 12:00:16'},
-            #           {'memory': 0.33, 'add_time': '2017-06-02 12:00:19'},
-            #           {'memory': 0.32, 'add_time': '2017-06-02 12:00:22'},
-            #           {'memory': 0.45, 'add_time': '2017-06-02 12:00:25'},
-            #           {'memory': 0.57, 'add_time': '2017-06-02 12:00:28'},
-            #           {'memory': 0.66, 'add_time': '2017-06-02 12:00:31'},
-            #           {'memory': 0.89, 'add_time': '2017-06-02 12:00:35'},
-            #           {'memory': 0.90, 'add_time': '2017-06-02 12:00:38'},
-            #           {'memory': 0.93, 'add_time': '2017-06-02 12:00:41'}]
-
-        elif task_type == '3':
-            # 待测代码
-            items = MultiTest.objects.filter(task_id=taskid)
-            for item in items:
-                rst = {}
-                # rst['add_time'] = item.add_time.strftime('%Y-%m-%d %H:%M:%S')
-                time_value = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item.add_time))).split(' ')
-                rst['add_time'] = time_value[1]
-                # 转发速率
-                rx_rate = item.rx_rate
-                # 上线速率
-                current_session = item.session_num
-                set_session = TestCaseState.objects.get(task_id=taskid).set_session
-                # cpu利用率
-                obj = CPUMemory.objects.filter(add_time__gt=item.add_time).first()
-                memory = obj.memory
-                # 性能资源比
-                memory_res_rate = (rx_rate + current_session / set_session) / memory
-                rst['memory'] = memory_res_rate
-                result.append(rst)
-
-            # 测试数据
-            # result = [{'memory': 0.15, 'add_time': '2017-06-03 13:00:13'},
-            #           {'memory': 0.21, 'add_time': '2017-06-03 13:00:16'},
-            #           {'memory': 0.33, 'add_time': '2017-06-03 13:00:19'},
-            #           {'memory': 0.32, 'add_time': '2017-06-03 13:00:22'},
-            #           {'memory': 0.45, 'add_time': '2017-06-03 13:00:25'},
-            #           {'memory': 0.57, 'add_time': '2017-06-03 13:00:28'},
-            #           {'memory': 0.66, 'add_time': '2017-06-03 13:00:31'},
-            #           {'memory': 0.89, 'add_time': '2017-06-03 13:00:35'},
-            #           {'memory': 0.90, 'add_time': '2017-06-03 13:00:38'},
-            #           {'memory': 0.93, 'add_time': '2017-06-03 13:00:41'}]
+                # 测试数据
+                # result = [{'memory': 0.15, 'add_time': '2017-06-01 10:00:13'},
+                #           {'memory': 0.21, 'add_time': '2017-06-01 10:00:16'},
+                #           {'memory': 0.33, 'add_time': '2017-06-01 10:00:19'},
+                #           {'memory': 0.32, 'add_time': '2017-06-01 10:00:22'},
+                #           {'memory': 0.45, 'add_time': '2017-06-01 10:00:25'},
+                #           {'memory': 0.57, 'add_time': '2017-06-01 10:00:28'},
+                #           {'memory': 0.66, 'add_time': '2017-06-01 10:00:31'},
+                #           {'memory': 0.89, 'add_time': '2017-06-01 10:00:35'},
+                #           {'memory': 0.90, 'add_time': '2017-06-01 10:00:38'},
+                #           {'memory': 0.93, 'add_time': '2017-06-01 10:00:41'}]
         else:
-            result = {}
+            result = []
 
         return HttpResponse(json.dumps(result), content_type='application/json')
-        # return HttpResponse(json.dumps(data), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
 
 
@@ -1126,6 +1050,7 @@ def api4_query_task_stability(req):
         task_type = d.get('tasktype')
         return HttpResponse(json.dumps(result), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
+
 
 # 性能页面cpu详情
 def api4_query_cpu_details(req):
@@ -1157,7 +1082,6 @@ def api4_get_index_case_performance(req):
 
         d = json.loads(req.body.decode('utf-8'))
         print(d)
-
         result = []
         taskid = d.get('taskid')
         task_type = d.get('tasktype')
@@ -1196,7 +1120,6 @@ def utc_to_local(utc_time_str, utc_format='%Y-%m-%dT%H:%M:%SZ'):
     local_dt = utc_dt.replace(tzinfo=pytz.utc).astimezone(local_tz)
     time_str = local_dt.strftime(local_format)
 
-
     return int(time.mktime(time.strptime(time_str, local_format)))
 
 
@@ -1217,70 +1140,72 @@ def local_to_utc(local_ts, utc_format='%Y-%m-%dT%H:%MZ'):
 #                   字节转发性能, 512字节转发性能, 1024字节转发性能, 1280字节转发性能, 1518字节转发性能, 综合上网最大会话容量, 综合上网新建会话速率,
 #                   综合上网需要的最大内存], 厂商二/版本二: [2, 3, 4, 7, 8, 9, 1, 2, 3, 10, 14, 12, 13, 1]}
 def api4_contrast_report(req):
-    if req.method =='POST':
-        # logging.INFO('生成对比报告')
+    if req.method == 'POST':
+        # logger.info('生成对比报告')
         d = json.loads(req.body.decode('utf-8'))
         venders = d.get('venders')
         vnf_type = d.get('vnf_type')
         version_flags = d.get('version_flags')
+        platform = d.get('platform')
         venders_lenth = len(venders)
         version_flags_lenth = len(version_flags)
         dict_reports = {}
         for vender in venders:
             for version_flag in version_flags:
                 testData = []                                 # 对于一个基本查询信息，储存对应所有测试用例类型的测试结果
-                vnf_nums = list(map(lambda n: 'vnf'+ str(n), range(1,6)))   # 示例:['vnf1','vnf2','vnf3','vnf4','vnf5']
+                # 测试结果中添加云平台信息
+                dict_platform = {'zhongXing': '中兴', 'huaWei': '华为', 'h3c': '华三', 'VMware': 'VMware'}
+                testData.append(dict_platform[platform])
+                # 测试结果测试数据部分
+                vnf_nums = list(map(lambda n: 'vnf' + str(n), range(1, 6)))   # 示例:['vnf1','vnf2','vnf3','vnf4','vnf5']
                 for vnf_num in vnf_nums:
-                    vnf_info = find_base_info(vender, vnf_type, version_flag, vnf_num)
+                    vnf_info = find_base_info(vender,platform, vnf_type, version_flag, vnf_num)
                     fun_find_test_result = vnf_num + '_find_test_result'      # 该字符串为需要用到的查找测试结果的函数名
-                    if vnf_info is None:                     #若没有该类型测试用例信息，返回元素为若干个'无'的列表
+                    if vnf_info is None:                     # 若没有该类型测试用例信息，返回元素为若干个'无'的列表
                         vnf_result = eval(fun_find_test_result)(None)
                     else:
                         vnf_result = eval(fun_find_test_result)(vnf_info.task_id)
-                    for k,v in vnf_result.items():
+                    for k, v in vnf_result.items():
                         testData.append(v)
-
-                if venders_lenth >= version_flags_lenth:              # 请求的厂商不止一个时，为多厂商同网元最新版本查询
+                # 为每个测试结果加表头
+                if venders_lenth >= version_flags_lenth:              # 请求的厂商不止一个_时，为多厂商同网元最新版本查询
                     dict_reports[vender] = testData
                 else:                                                # 请求的版本不止一个时，为同厂商同网元不同版本查询
                     dict_reports[version_flag] = testData
-                #test_report = {vender:testData,'baseInfo':基本信息}#添加基本信息处
+
 
         return HttpResponse(json.dumps(dict_reports), content_type='application/json')
     return HttpResponse('Permission denied!', status=403)
 
 
 # ############################辅助函数######################################################################
-# 描述：通过厂商找出其对应的最新版本或者次新版本，找出对应的基本信，返回一条记录
+# 描述：通过厂商找出其对应的最新版本或者次新版本，找出对应的基本信息，返回一条记录
 # 参数：厂商、网元类型、返回版本标志【最新版本（1表示）,次新版本（2表示）】、测试类型
-def find_base_info(vender, vnf_type, version_flag,test_type):
-    if test_type == 'vnf1':
-        items = TestCaseState.objects.filter(set_vender=vender, set_vnf_type=vnf_type,type_name='VNF_1_Concurrent_Session_Capacity').all()
-    elif test_type == 'vnf2':
-        items = TestCaseState.objects.filter(set_vender=vender, set_vnf_type=vnf_type,type_name='VNF_2_VBRAS_Client_Forwarding_Performance').all()
-    elif test_type == 'vnf3':
-        print(vender,vnf_type)
-        items = TestCaseState.objects.filter(set_vender=vender, set_vnf_type=vnf_type,type_name='VNF_3_PPPoE_IPTV_IPoE_VoIP').all()
-    elif test_type == 'vnf4':
-        items = TestCaseState.objects.filter(set_vender=vender, set_vnf_type=vnf_type, type_name='VNF_4_ISIS_Forwarding_Capacity').all()
-    elif test_type == 'vnf5':
-        items = TestCaseState.objects.filter(set_vender=vender, set_vnf_type=vnf_type, type_name='VNF_5_BGP_Forwarding_Capacity').all()
+def find_base_info(vender, platform, vnf_type, version_flag, test_type):
+    # 根据dixt_type中请求参数test_type与数据表中type_name的对应关系，查询厂商、网元类型信息筛选该用例所有版本的基本信息
+    dict_type = {'vnf1': 'VNF_1_Concurrent_Session_Capacity',
+                 'vnf2': 'VNF_2_VBRAS_Client_Forwarding_Performance',
+                 'vnf3': 'VNF_3_PPPoE_IPTV_IPoE_VoIP',
+                 'vnf4': 'VNF_4_ISIS_Forwarding_Capacity',
+                 'vnf5': 'VNF_5_BGP_Forwarding_Capacity'}
+    if test_type in dict_type.keys():
+        items = TestCaseState.objects.filter(set_vender=vender, set_platform=platform, set_vnf_type=vnf_type,type_name=dict_type[test_type]).all()
     if items is None or items.count() < version_flag:
         return None
-    #print("测试分组排序专用",TestCaseState.objects.values('set_version').annotate(Max('id')).order_by['-id'][0])
-    item_list = list(items.order_by('-set_version','-id'))            #   筛选掉相同的查询结果，如果与前面记录的版本相同，作为重复项移除
-    last_version = 0
-    for item in item_list:
-        if item.set_version == last_version:
-            item_list.remove(item)
+    item_list = list(items.order_by('-set_version','-id'))
+    # 筛选掉相同的查询结果，如果与前面记录的版本相同，作为重复项移除
+    item_index, last_version = 0, 0
+    while item_index < len(item_list):
+        if item_list[item_index].set_version == last_version:
+            item_list.remove(item_list[item_index])
         else:
-            last_version = item.set_version
+            last_version = item_list[item_index].set_version
+            item_index = item_index + 1
+    # 筛选结果列表去重后，若该列表长度大于等于需要的版本标志，返回相应的条目，否则返回空
     if len(item_list) >= version_flag:
         base_info = item_list[version_flag-1]
-        if test_type == 'vnf1':                                 # 用于测试
-            print('版本号：', base_info.task_id)
-            print('版本信息：', base_info.set_version)
         return base_info
+    return None
 
 
 # ############################辅助函数######################################################################
@@ -1299,28 +1224,36 @@ def vnf1_find_test_result(uuid):
             for item in items:
                 count += 1
                 sum_con += float(item.connect_rate)
-            dict_result['avg_con'] = sum_con / count
+            dict_result['avg_con'] = round(sum_con / count,3)
         if CPUMemory.objects.filter(task_id=uuid):
-            dict_result['max_memory'] = CPUMemory.objects.filter(task_id=uuid).order_by("memory").last().memory
+            memory = CPUMemory.objects.filter(task_id=uuid).order_by("memory").last().memory
+            memory_percent = str(round(100*memory, 2)) + '%'  # 内存利用率显示百分比数值，取两位小数
+            dict_result['max_memory'] = memory_percent
     # dict_result = {'max_session': max_session, 'avg_con': avg_con, 'min_con': min_con, 'max_memory': max_memory,
     #        'max_session_std': 100, 'avg_con_std': 100, 'min_con_std': 100, 'max_memory_std': 100}
     # dict_result = {'max_session': 100, 'avg_con': 100, 'min_con': 100, 'max_memory': 100,
     #         'max_session_std': 100,'avg_con_std': 100, 'min_con_std': 100, 'max_memory_std': 100}  # 用于测试数据
     return(dict_result)
 
+
 def vnf2_find_test_result(uuid):
+    # dict_result = collections.OrderedDict(
+    #     [('rx_64', '无'), ('rx_128', '无'), ('rx_256', '无'), ('rx_512', '无'), ('rx_1024', '无'),
+    #      ('rx_1280', '无'), ('rx_1518', '无')])
     dict_result = collections.OrderedDict(
         [('rx_64', '无'), ('rx_128', '无'), ('rx_256', '无'), ('rx_512', '无'), ('rx_1024', '无'),
          ('rx_1280', '无'), ('rx_1518', '无')])
     if uuid is not None:
         items = UserTransTest.objects.filter(task_id=uuid)
-        frame_sizes = [64,128,256,512,1024,1280,1518]
+        frame_sizes = [64, 128, 256, 512, 1024, 1280, 1518]
         for frame_size in frame_sizes:
             if items.filter(frame_size=frame_size):
-                rx = 'rx_'+str(frame_size)
-                rx_size= items.filter(frame_size=frame_size).first().rx_rate
-                dict_result[rx] = rx_size
+                rx = 'rx_' + str(frame_size)
+                rx_size = items.filter(frame_size=frame_size).first().rx_rate
+                rx_size = round(rx_size/(1024*1024*1024) * 100, 3)
+                dict_result[rx] = str(rx_size) + '%'
     return dict_result
+
 
 def vnf3_find_test_result(uuid):
     dict_result = collections.OrderedDict(
@@ -1337,7 +1270,9 @@ def vnf3_find_test_result(uuid):
                 sum_con += float(item.connect_rate)
             dict_result['avg_con'] = sum_con / count
         if CPUMemory.objects.filter(task_id=uuid):
-            dict_result['max_memory'] = CPUMemory.objects.filter(task_id=uuid).order_by("memory").last().memory
+            memory = CPUMemory.objects.filter(task_id=uuid).order_by("memory").last().memory
+            memory_percent = str(round(100*memory, 2)) + '%'  # 内存利用率显示百分比数值，取两位小数
+            dict_result['max_memory'] = memory_percent
     # dict_result = {'max_session': max_session, 'avg_con': avg_con, 'min_con': min_con, 'max_memory': max_memory,
     #        'max_session_std': 100, 'avg_con_std': 100, 'min_con_std': 100, 'max_memory_std': 100}
     # dict_result = {'max_session': 100, 'avg_con': 100, 'min_con': 100, 'max_memory': 100,
@@ -1368,148 +1303,7 @@ def vnf5_find_test_result(uuid):
     return(dict_result)
 
 
-# 20170803修改，在原来的基础上增加了厂商、VNF类型、版本号、测试次数、上线速率等信息。
-# 获取到前台送的指令，新建测试用例时，从前端向后端传入测试基本信息，存储到数据库，并生成uuid后返回给前台
-def api4_vnf1_uuid(req):
-    if req.method == 'POST':
-
-        d = json.loads(req.body.decode('utf-8'))
-        beginflag = d.get('begin')
-        if beginflag == 1:
-            taskid = uuid.uuid1()
-            # uuid1()——基于时间戳
-            # 由MAC地址、当前时间戳、随机数生成。可以保证全球范围内的唯一性，
-            # 但MAC的使用同时带来安全性问题，局域网中可以使用IP来代替MAC。
-            taskid = str(taskid)
-
-        obj = TestCaseState()
-        obj.task_id = taskid
-        obj.set_session = d.get('set_session')
-        obj.set_flow = d.get('set_flow')
-        obj.set_version = d.get('set_version')
-        obj.set_vnf_type = d.get('set_vnf_type')
-        obj.set_vender=d.get('set_vender')
-        obj.set_timer = d.get('set_timer')
-        obj.set_online_rate = d.get('set_online_rate')
-        obj.set_platform = d.get('set_cloudPlatform')
-        obj.set_platform_v = d.get('set_platformVer')
-        obj.current_state = True
-        obj.type_name = 'VNF_1_Concurrent_Session_Capacity'
-        obj.save()                # 存储到数据库
-        data = {'taskId': taskid}
-        return HttpResponse(json.dumps(data), content_type='application/json')
-    return HttpResponse('Permission denied!', status=403)
-
-
-def api4_vnf2_uuid(req):
-    if req.method == 'POST':
-
-        d = json.loads(req.body.decode('utf-8'))
-        beginflag = d.get('begin')
-        if beginflag == 1:
-            taskid = uuid.uuid1()
-            taskid = str(taskid)
-        obj = TestCaseState()
-        obj.task_id = taskid
-        obj.set_session = d.get('set_session')
-        obj.set_flow = d.get('set_flow')
-        obj.set_version = d.get('set_version')
-        obj.set_vnf_type = d.get('set_vnf_type')
-        obj.set_vender=d.get('set_vender')
-        obj.set_timer = d.get('set_timer')
-        obj.set_platform = d.get('set_cloudPlatform')
-        obj.set_platform_v = d.get('set_platformVer')
-        obj.current_state = True
-        # mt.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        # obj.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        obj.type_name = 'VNF_2_VBRAS_Client_Forwarding_Performance'
-        obj.save()
-        data = {'taskId': taskid}
-        return HttpResponse(json.dumps(data), content_type='application/json')
-    return HttpResponse('Permission denied!', status=403)
-
-
-def api4_vnf3_uuid(req):
-    if req.method == 'POST':
-        d = json.loads(req.body.decode('utf-8'))
-        beginflag = d.get('begin')
-        if beginflag == 1:
-            taskid = uuid.uuid1()
-            taskid = str(taskid)
-
-        obj = TestCaseState()
-        obj.task_id = taskid
-        obj.set_session = d.get('set_session')
-        obj.set_flow = d.get('set_flow')
-        obj.set_version = d.get('set_version')
-        obj.set_vnf_type = d.get('set_vnf_type')
-        obj.set_vender = d.get('set_vender')
-        obj.set_timer = d.get('set_timer')
-        obj.set_platform = d.get('set_cloudPlatform')
-        obj.set_platform_v = d.get('set_platformVer')
-        obj.current_state = True
-        # mt.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        # obj.add_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        obj.type_name = 'VNF_3_PPPoE_IPTV_IPoE_VoIP'
-        obj.save()
-        data = {'taskId': taskid}
-        return HttpResponse(json.dumps(data), content_type='application/json')
-    return HttpResponse('Permission denied!', status=403)
-
-
-# ###########################################2017-8-28 新增两个测试用例（ISIS、BGP）#####################################
-def api4_vnf4_uuid(req):
-    if req.method == 'POST':
-        d = json.loads(req.body.decode('utf-8'))
-        beginflag = d.get('begin')
-        if beginflag == 1:
-            taskid = str(uuid.uuid1())
-        obj = TestCaseState()
-        obj.type_name = 'VNF_4_ISIS_Forwarding_Capacity'
-        obj.task_id = taskid
-        obj.set_vender = d.get('set_vender')
-        obj.set_version = d.get('set_version')
-        obj.set_platform = d.get('set_cloudPlatform')
-        obj.set_platform_v = d.get('set_platformVer')
-        obj.set_vnf_type = d.get('set_vnf_type')
-        obj.set_timer = d.get('set_timer')
-        obj.set_router_num = d.get('set_router_num')
-        obj.set_host_num = d.get('set_host_num')
-        obj.set_router_learning_time = d.get('set_router_learning_time')
-        obj.current_state = True
-        obj.save()
-        data = {'taskId' : taskid}
-        return HttpResponse(json.dumps(data),content_type='application/json')
-    return HttpResponse('Permission Denied!', status=403)
-
-
-def api4_vnf5_uuid(req):
-    if req.method == 'POST':
-        d = json.loads(req.body.decode('utf-8'))
-        beginflag = d.get('begin')
-        if beginflag == 1:
-            taskid = str(uuid.uuid1())
-        obj = TestCaseState()
-        obj.type_name = 'VNF_5_BGP_Forwarding_Capacity'
-        obj.task_id = taskid
-        obj.set_vender = d.get('set_vender')
-        obj.set_version = d.get('set_version')
-        obj.set_platform = d.get('set_cloudPlatform')
-        obj.set_platform_v = d.get('set_platformVer')
-        obj.set_vnf_type = d.get('set_vnf_type')
-        obj.set_timer = d.get('set_timer')
-        obj.set_router_num = d.get('set_router_num')
-        obj.set_host_num = d.get('set_host_num')
-        obj.set_router_learning_time = d.get('set_router_learning_time')
-        obj.current_state = True
-        obj.save()
-        data = {'taskId' : taskid}
-        return HttpResponse(json.dumps(data),content_type='application/json')
-    return HttpResponse('Permission Denied!', status=403)
-
-
-
-
+# 因为厂商、网元类型为固定的几个可选项，该接口暂时未用到。
 # 打开决策对比页面时，向前端传入厂商设备等基本信息以便用户能够从中筛选厂商等
 def api4_provide_base_infos(req):
     if req.method == 'POST':
@@ -1519,7 +1313,7 @@ def api4_provide_base_infos(req):
             # test_item = PPPoESessionTest()
             # test_item.task_id=item.task_id
             # test_item.save()
-            base_info={}
+            base_info = {}
             base_info['vender'] = item.set_vender
             base_info['version'] = item.set_version
             base_info['vnf_type'] = item.set_vnf_type
@@ -1528,6 +1322,7 @@ def api4_provide_base_infos(req):
             base_infos.append(base_info)
         return HttpResponse(json.dumps(base_infos), content_type='application/json')
     return HttpResponse('Permission Denied!', status=403)
+
 
 # 导出测试报告，在原来的基础上添加辅助函数实现计算功能
 def api4_report(req):
@@ -1545,6 +1340,10 @@ def api4_report(req):
             data = vnf2_find_test_result(task_id)
         elif task_type == '3':
             data = vnf3_find_test_result(task_id)
+        elif task_type == '4':
+            data = vnf4_find_test_result(task_id)
+        elif task_type == '5':
+            data = vnf5_find_test_result(task_id)
         else:
             data = {}
         return HttpResponse(json.dumps(data), content_type='application/json')

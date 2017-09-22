@@ -61,6 +61,22 @@
 	margin-top: 10px;
 	font-size: 20px;
 }
+.node-config2 select {
+	width: 80%;
+	margin-top: 10px;
+}
+#choose-port2 p {
+	margin-top: 10px;
+	font-size: 20px;
+}
+.node-config3 select {
+	width: 80%;
+	margin-top: 10px;
+}
+#choose-port3 p {
+	margin-top: 10px;
+	font-size: 20px;
+}
 
 
 

@@ -42,18 +42,25 @@
                    <option value="h3c">华三</option>
                 </select>
                 <select>
+                    <option selected disabled>请选择云平台</option>
+                    <option value="zhongXing">中兴</option>
+                   <option value="huaWei">华为</option>
+                   <option value="h3c">华三</option>
+                   <option value="VMware">VMware</option>
+                </select>
+                <select>
                     <option selected disabled>请选择网元</option>
-                    <option value="1">网元 1</option>
-                    <option value="2">网元 2</option>
-                    <option value="3">网元 3</option>
+                    <option value="1">vBRAS</option>
+                    <option value="2">vEPC</option>
+                    <option value="3">vFireWall</option>
                 </select>
                 <!-- 初期默认每个厂家的最新三个版本 版本选择禁用了 -->
-                <select disabled>
-                    <option>Version 1</option>
-                    <option>Version 2</option>
-                    <option>Version 3</option>
-                    <option selected disabled>请选择版本</option>
-                </select>
+{#                <select disabled>#}
+{#                    <option>Version 1</option>#}
+{#                    <option>Version 2</option>#}
+{#                    <option>Version 3</option>#}
+{#                    <option selected disabled>请选择版本</option>#}
+{#                </select>#}
             <button id="version-report-btn">确定</button>
         </div>
     </div>
@@ -70,11 +77,18 @@
                 <label><input type="checkbox" value="certus"><span>赛特斯</span></label>
                 <label><input type="checkbox" value="h3c"><span>华三</span></label>
             </div>
+            <div id="platform-choose">
+                <p>请选择云平台</p>
+                <label><input type="radio" name="platform" value="zhongXing">中兴</label>
+                <label><input type="radio" name="platform" value="huaWei">华为</label>
+                <label><input type="radio" name="platform" value="h3c">华三</label>
+                <label><input type="radio" name="platform" value="VMware">VMware</label>
+            </div>
             <div id="netNode-choose">
                 <p>请选择网元</p>
-                <label><input type="radio" name="netType" value="1">网元1</label>
-                <label><input type="radio" name="netType" value="2">网元2</label>
-                <label><input type="radio" name="netType" value="3">网元3</label>
+                <label><input type="radio" name="netType" value="1" checked='checked'>vBRAS</label>
+                <label><input type="radio" name="netType" value="2">vEPC</label>
+                <label><input type="radio" name="netType" value="3">vFireWall</label>
             </div>
              <button id="vendor-report-btn">确定</button>
         </div>
@@ -94,109 +108,64 @@
                         <tr id="table-type-version">
                             <th>测试项</th>
                             <th>测试标准</th>
-                            <!-- <th>version 1</th>
-                            <th>version 2</th>
-                            <th>version 3</th> -->
                         </tr>
                     </thead>
 
                     <tbody id="version-tbody">
+                            <tr><th rowspan = '1'>云平台</th><th>云平台类型</th></tr>
                             <tr>
                                 <th rowspan = "4">PPPoE并发会话容量测试</th>
-                                <th>最大平均会话容量</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
+                                <th>最大平均会话容量（个）</th>
                             </tr>
                             <tr>
-                                <th>新建平均会话速率</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
+                                <th>新建平均会话速率（个/秒）</th>
                             </tr>
                             <tr>
-                                <th>新建最小会话速率</th>
-                                    <!-- <td>暂无数据</td>
-                                    <td>暂无数据</td>
-                                    <td>暂无数据</td> -->
+                                <th>新建最小会话速率（个/秒）</th>
                             </tr>
                             <tr>
-                                <th>需要的最大内存</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
+                                <th>需要的最大内存（%）</th>
                             </tr>
-
 
                             <tr>
                                 <th rowspan = "7">用户侧转发性能测试</th>
                                 <th>64字节转发性能</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
                             </tr>
                             <tr>
                                 <th>128字节转发性能</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
                             </tr>
                             <tr>
                                 <th>256字节转发性能</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
                             </tr>
                             <tr>
                                 <th>512字节转发性能</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
                             </tr>
                             <tr>
                                 <th>1024字节转发性能</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
                             </tr>
                             <tr>
                                 <th>1280字节转发性能</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
                             </tr>
                             <tr>
                                 <th>1518字节转发性能</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
                             </tr>
-
 
                             <tr>
                                 <th rowspan="3">综合上网业务测试</th>
-                                <th>最大会话容量</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
+                                <th>最大会话容量（个）</th>
                             </tr>
                             <tr>
-                                <th>新建会话速率</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
+                                <th>新建会话速率（个/秒）</th>
                             </tr>
                             <tr>
-                                <th>需要的最大内存</th>
-                                <!-- <td>暂无数据</td>
-                                <td>暂无数据</td>
-                                <td>暂无数据</td> -->
+                                <th>需要的最大内存（%）</th>
                             </tr>
-                            <!-----------------------2017-8-29修改：新增两个测试用例结果（不同版本页面）--------------->
+
                             <tr><th rowspan="2">ISIS路由转发测试</th><th>路由容量测试结果</th></tr>
-                            <tr><th>黑洞路由流量测试结果</th></tr>
+                            <tr><th>黑洞路由容量测试结果</th></tr>
+
                             <tr><th rowspan="2">BGP路由转发测试</th><th>路由容量测试结果</th></tr>
-                            <tr><th>黑洞路由流量测试结果</th></tr>
+                            <tr><th>黑洞路由容量测试结果</th></tr>
 
                     </tbody>
                 </table>
@@ -216,27 +185,28 @@
                     </thead>
 
                     <tbody id="vendor-tbody">
+                            <tr><th rowspan = '1'>云平台</th><th>云平台类型</th></tr>
                             <tr>
                                 <th rowspan = "4">PPPoE并发会话容量测试</th>
-                                <th>最大平均会话容量</th>
+                                <th>最大平均会话容量（个）</th>
                                 <!-- <td>暂无数据</td>
                                 <td>暂无数据</td>
                                 <td>暂无数据</td> -->
                             </tr>
                             <tr>
-                                <th>新建平均会话速率</th>
+                                <th>新建平均会话速率（个/秒）</th>
                                 <!-- <td>暂无数据</td>
                                 <td>暂无数据</td>
                                 <td>暂无数据</td> -->
                             </tr>
                             <tr>
-                                <th>新建最小会话速率</th>
+                                <th>新建最小会话速率（个/秒）</th>
                                     <!-- <td>暂无数据</td>
                                     <td>暂无数据</td>
                                     <td>暂无数据</td> -->
                             </tr>
                             <tr>
-                                <th>需要的最大内存</th>
+                                <th>需要的最大内存（%）</th>
                                 <!-- <td>暂无数据</td>
                                 <td>暂无数据</td>
                                 <td>暂无数据</td> -->
@@ -290,19 +260,19 @@
 
                             <tr>
                                 <th rowspan="3">综合上网业务测试</th>
-                                <th>最大会话容量</th>
+                                <th>最大会话容量（个）</th>
                                 <!-- <td>暂无数据</td>
                                 <td>暂无数据</td>
                                 <td>暂无数据</td> -->
                             </tr>
                             <tr>
-                                <th>新建会话速率</th>
+                                <th>新建会话速率（个/秒）</th>
                                 <!-- <td>暂无数据</td>
                                 <td>暂无数据</td>
                                 <td>暂无数据</td> -->
                             </tr>
                             <tr>
-                                <th>需要的最大内存</th>
+                                <th>需要的最大内存（%）</th>
                                 <!-- <td>暂无数据</td>
                                 <td>暂无数据</td>
                                 <td>暂无数据</td> -->

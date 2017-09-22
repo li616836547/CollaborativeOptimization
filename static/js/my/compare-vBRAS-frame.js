@@ -85,7 +85,8 @@ $("#version-report-btn").click(function() {
     	else {
     		// 请求时需发送的信息
     		var vendor = verConfig[0].value;
-    		var netNode = verConfig[1].value;
+    		var platform = verConfig[1].value;
+    		var netNode = verConfig[2].value;
 
     		// 更换表格标题
     		var index = verConfig[0].selectedIndex;//获取当前选择项的索引
@@ -98,6 +99,7 @@ $("#version-report-btn").click(function() {
                 data: JSON.stringify({
                     venders: [vendor],
                     vnf_type: netNode,
+                    platform: platform,   // 新增云平台，需要改
                     version_flags: [1,2,3]
                 }),
             }).done(function (data) { 
@@ -164,9 +166,11 @@ $("#vendor-report-btn").click(function() {
 	$("#vendor-report-table").find("table")[0].setAttribute("id", "mytableExcel");
 
 	var vendorChoose = $("#vendor-choose").find("input");
+//	var platformChoose = $("#platform-choose").find("input");
     //发送到后台 vendorName netNode
 	var vendorName = [];
 	var tableHead = [];
+	var platform = $("#platform-choose input[name='platform']:checked").val();
 	var netNode = $("#netNode-choose input[name='netType']:checked").val();
 	for (var i = 0; i < vendorChoose.length; i++) {
 		if(vendorChoose[i].checked) {
@@ -184,6 +188,7 @@ $("#vendor-report-btn").click(function() {
                 data: JSON.stringify({
                     venders: vendorName,
                     vnf_type: netNode,
+                    platform: platform,
                     version_flags: [1]
                 }),
             }).done(function (data) {

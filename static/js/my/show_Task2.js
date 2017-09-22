@@ -376,7 +376,7 @@ $("#confirm_netnode").click(function() {
   }
 
   var configData = confirm("请确认：" + "\n" + "厂商：" + vendor_name + "\n"
-                        + "版本：" + version_num + "\n" + "网元:" + netNodeNum + "\n"
+                        + "版本：" + version_num + "\n" + "网元类型: " + 'vBRAS' + "\n"
                   + "IP：" + ipAddr + "\n"  + "Slot：" + slotType + "\n" + "Port：" + portType
                   + "\n" + "云平台：" + cloudPlatform + "\n" +"平台版本：" + platformVers) 
   if (configData && vendor_name && cloudPlatform) {
@@ -440,17 +440,13 @@ if (sessionData) {
       }).done(function (data) {
           // alert(data.stepId);
 
-          alert("接收到data");
           id = data.taskId;
-          alert(id);
-          // alert(Sp +'\n'+
-          // portType);
-          //$.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
           $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
               type:'POST',
               data:
                   JSON.stringify({
                       scripttype: 'itest',
+                      cloudPlatform: cloudPlatform,
                       serverIp: '192.168.21.52:8000',
                       testcase: {
                           script: [{
@@ -481,8 +477,8 @@ if (sessionData) {
 			      console.log('i-test success');
                   console.log(msg);}
           }).done(function(data){
-              alert('i-test OK');
-              alert(data);
+              alert('配置信息已下发');
+              // alert(data);
               //window.location.reload();
           })
           Sp = [];
@@ -526,15 +522,14 @@ if (sessionData) {
                   }),
           }).done(function (data) {
           // alert(data.stepId);
-
-          alert("接收到data");
           id = data.taskId;
-          alert(id);
+          // alert(id);
           $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
               type:'POST',
               data:
                   JSON.stringify({
                       scripttype: 'itest',
+                      cloudPlatform: cloudPlatform,
                       serverIp: '192.168.21.52:8000',
                       testcase: {
                           script: [{
@@ -562,7 +557,7 @@ if (sessionData) {
 
                   }),
           }).done(function(data){
-              alert(data.log);
+              // alert(data.log);
               //window.location.reload();
           })
 
@@ -603,14 +598,15 @@ if (multiData) {
               }),
       }).done(function (data) {
           // alert(data.stepId);
-          alert("接收到data");
+          // alert("接收到data");
           id = data.taskId;
-          alert(id);
+          // alert(id);
           $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
               type:'POST',
               data:
                   JSON.stringify({
                       scripttype: 'itest',
+                      cloudPlatform: cloudPlatform,
                       serverIp: '192.168.21.52:8000',
                       testcase: {
                           script: [{
@@ -704,7 +700,7 @@ $('#test_ISIS_btn').click(function() {
             // alert(data.stepId);
             alert("接收到data");
             id = data.taskId;
-            alert(id);
+            // alert(id);
             // alert(Sp +'\n'+
             // portType);
             // $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
@@ -714,6 +710,7 @@ $('#test_ISIS_btn').click(function() {
                 data:
                     JSON.stringify({
                         scripttype: 'itest',
+                        cloudPlatform: cloudPlatform,
                         serverIp: '192.168.21.52:8000',
                         testcase: {
                             script: [{
@@ -748,8 +745,8 @@ $('#test_ISIS_btn').click(function() {
                     console.log(msg);
                 }
             }).done(function(data){
-                alert('i-test OK');
-                alert(data);
+                alert('配置信息已下发');
+                // alert(data);
                 // window.location.reload();
             });
             Sp = [];
@@ -814,7 +811,7 @@ $('#test_BGP_btn').click(function() {
             // alert(data.stepId);
             alert("接收到data");
             id = data.taskId;
-            alert(id);      //前端显示taskId
+            // alert(id);      //前端显示taskId
             // alert(Sp +'\n'+
             // portType);
             // $.ajax('http://192.168.21.53:5000/TaskExec/bkg',{
@@ -824,6 +821,7 @@ $('#test_BGP_btn').click(function() {
                 data:
                     JSON.stringify({
                         scripttype: 'itest',
+                        cloudPlatform: cloudPlatform,
                         serverIp: '192.168.21.52:8000',
                         testcase: {
                             script: [{
@@ -858,8 +856,8 @@ $('#test_BGP_btn').click(function() {
                     console.log(msg);
                 }
             }).done(function(data){
-                alert('i-test OK');
-                alert(data);
+                alert('配置信息已下发');
+                // alert(data);
                 // window.location.reload();
             });
             Sp = [];
@@ -881,7 +879,7 @@ $('#current_task_abort').click(function() {
           }),
     }).done(function(data){
         alert(data.current_state);
-        alert(data.task_id);
+        // alert(data.task_id);
         flag_id = data.task_id;
         $.ajax('http://192.168.21.53:5000/TaskExecStatus/bkg',{
             type:'POST',

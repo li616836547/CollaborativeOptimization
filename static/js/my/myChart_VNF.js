@@ -24,6 +24,8 @@ $(document).ready(function() {
                     tasktype:taskType,
                 }),
             }).done(function (data) {
+                console.log('CPU data_______')
+                console.log(data)
                 var Labels_CPU = [];   // times, x axis
                 var Datasets_CPU = []; // dataset
                 var Data_CPU = [];
@@ -70,6 +72,8 @@ $(document).ready(function() {
                     tasktype:taskType,
                 }),
             }).done(function (data) {
+                console.log('CPU data_______')
+                console.log(data)
                 var Labels_Memory = [];   // times, x axis
                 var Datasets_Memory = []; // dataset
                 var Data_Memory = [];

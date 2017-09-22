@@ -18,7 +18,7 @@ var options ={
         }]
     }
 };
-
+$('.PPPoE_progress_bar').hide();
 /**
  *
  * @type {{labels: [*], datasets: [*]}}
@@ -412,12 +412,11 @@ $(function(){
                       flag: 1,
                   }),
               }).done(function (data) {
-
                   switch(taskType)
                   {
                       case '1':
 
-
+                          $('.PPPoE_progress_bar').show();
                           var taskTypeTitle = 'PPPOE并发会话容量测试';
                           var currentData = '<h6>设置session数：'+ data.set_session +'</h6>' +
                                 '<h6>已完成session数：'+ data.current_session +'</h6>';
@@ -447,19 +446,21 @@ $(function(){
                       case '4':
                           var taskTypeTitle = 'vBRAS ISIS路由容量测试';
                           var currentData =
-                              '<h6>建立邻居        <span class="code" id="FS_68">' + data.adjacency_status + '</span></h6>' +
-                              '<h6>学习路由        <span class="code" id="FS_128">' + data.router_status + '</span></h6>' +
-                              '<h6>验证流量        <span class="code" id="FS_256">' + data.traffic_status + '</span></h6>' +
-                              '<h6>正常路由检测结果 <span class="code" id="FS_512">' + data.router_traffic + '</span></h6>' +
-                              '<h6>黑洞路由检测结果 <span class="code" id="FS_1024">' + data.blackhole_traffic + '</span></h6>';
+                              '<h6>建立邻居:         <span class="code" id="FS_68">' + data.adjacency_status + '</span></h6>' +
+                              '<h6>学习路由:         <span class="code" id="FS_128">' + data.router_status + '</span></h6>' +
+                              '<h6>验证流量:         <span class="code" id="FS_256">' + data.traffic_status + '</span></h6>' +
+                              '<h6>正常路由检测结果: <span class="code" id="FS_512">' + data.router_traffic + '</span></h6>' +
+                              '<h6>黑洞路由检测结果: <span class="code" id="FS_1024">' + data.blackhole_traffic + '</span></h6>';
+                          break;
                       case '5':
                           var taskTypeTitle = 'vBRAS BGP路由容量测试';
                           var currentData =
-                              '<h6>建立邻居        <span class="code" id="FS_68">' + data.adjacency_status + '</span></h6>' +
-                              '<h6>学习路由        <span class="code" id="FS_128">' + data.router_status + '</span></h6>' +
-                              '<h6>验证流量        <span class="code" id="FS_256">' + data.traffic_status + '</span></h6>' +
-                              '<h6>正常路由检测结果 <span class="code" id="FS_512">' + data.router_traffic + '</span></h6>' +
-                              '<h6>黑洞路由检测结果 <span class="code" id="FS_1024">' + data.blackhole_traffic + '</span></h6>'
+                              '<h6>建立邻居:         <span class="code" id="FS_68">' + data.adjacency_status + '</span></h6>' +
+                              '<h6>学习路由:         <span class="code" id="FS_128">' + data.router_status + '</span></h6>' +
+                              '<h6>验证流量:         <span class="code" id="FS_256">' + data.traffic_status + '</span></h6>' +
+                              '<h6>正常路由检测结果: <span class="code" id="FS_512">' + data.router_traffic + '</span></h6>' +
+                              '<h6>黑洞路由检测结果: <span class="code" id="FS_1024">' + data.blackhole_traffic + '</span></h6>'
+                          break;
                   }
                   document.getElementById("taskTypeTitle").innerHTML = taskTypeTitle;
                   document.getElementById("currentData").innerHTML = currentData;
@@ -503,9 +504,13 @@ $(function(){
               });
 
             }
+            // 没有正在运行的测试用例时，将仪表盘数据清零
             else{
-                alert("没有正在运行的测试用例！")
+                arrow.setValue(0);
+                axis.setBottomText(0 + " %");
+                arrow1.setValue(0);
+                axis1.setBottomText(0 + " %");
             }
-     });
+     })
     }
 });

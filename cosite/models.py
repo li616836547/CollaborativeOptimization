@@ -61,24 +61,24 @@ class MultiTest(models.Model):
 
 
 class ISISCapacityTest(models.Model):
-    id = models.AutoField(auto_created = True,primary_key=True, serialize=False, verbose_name='ID')
+    id = models.AutoField(auto_created=True,primary_key=True, serialize=False, verbose_name='ID')
     task_id = models.UUIDField(help_text='测试用例ID')
-    adjacency_status = models.CharField(help_text = '邻居建立状态',default = '-1',max_length = 100,null = True)
-    router_status = models.CharField(help_text = '路由发送状态',default = '-1',max_length = 100,null = True)
-    traffic_status = models.CharField(help_text = '验证流量发送状态',default = '-1',max_length = 100,null = True)
-    router_traffic = models.CharField(help_text = '正常流量测试结果',default = '-1',max_length = 100,null = True)
-    blackhole_traffic = models.CharField(help_text = '黑洞流量测试结果',default = '-1',max_length = 100,null = True)
+    adjacency_status = models.CharField(help_text='邻居建立状态',default = '-1',max_length = 100,null = True)
+    router_status = models.CharField(help_text='路由发送状态',default = '-1',max_length = 100,null = True)
+    traffic_status = models.CharField(help_text='验证流量发送状态',default = '-1',max_length = 100,null = True)
+    router_traffic = models.CharField(help_text='正常流量测试结果',default = '-1',max_length = 100,null = True)
+    blackhole_traffic = models.CharField(help_text='黑洞流量测试结果',default = '-1',max_length = 100,null = True)
     add_time = models.IntegerField(help_text='添加时间', default='-1', null=True)
 
 
 class BGPCapacityTest(models.Model):
     id = models.AutoField(auto_created = True,primary_key=True, serialize=False, verbose_name='ID')
     task_id = models.UUIDField(help_text='测试用例ID')
-    adjacency_status = models.CharField(help_text = '邻居建立状态',default = '-1',max_length = 100,null = True)
-    router_status = models.CharField(help_text = '路由发送状态',default = '-1',max_length = 100,null = True)
-    traffic_status = models.CharField(help_text = '验证流量发送状态',default = '-1',max_length = 100,null = True)
-    router_traffic = models.CharField(help_text = '正常流量测试结果',default = '-1',max_length = 100,null = True)
-    blackhole_traffic = models.CharField(help_text = '黑洞流量测试结果',default = '-1',max_length = 100,null = True)
+    adjacency_status = models.CharField(help_text='邻居建立状态',default = '-1',max_length = 100,null = True)
+    router_status = models.CharField(help_text='路由发送状态',default = '-1',max_length = 100,null = True)
+    traffic_status = models.CharField(help_text='验证流量发送状态',default = '-1',max_length = 100,null = True)
+    router_traffic = models.CharField(help_text='正常流量测试结果',default = '-1',max_length = 100,null = True)
+    blackhole_traffic = models.CharField(help_text='黑洞流量测试结果',default = '-1',max_length = 100,null = True)
     add_time = models.IntegerField(help_text='添加时间', default='-1', null=True)
 
 
